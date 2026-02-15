@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>المشاكل الصحية/النفسية | حياك</title>
+  <meta name="description" content="إدارة المشاكل الصحية والنفسية وإعدادات الخصوصية في تطبيق حياك" />
+  <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+  
+  <!-- Google Fonts: Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Afeesh local fonts (single family name, multiple weights) -->
+  <style>
+    /* Map several available Afeesh font files to one family name for easy usage */
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Aadi.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Aadi.woff') format('woff'),
+           url('./afeesh/Afeesh-Aadi.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Mekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Mekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-Mekalbaz.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-NosMekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-NosMekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-NosMekalbaz.ttf') format('truetype');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-NosMesalwa.woff2') format('woff2'),
+           url('./afeesh/Afeesh-NosMesalwa.woff') format('woff'),
+           url('./afeesh/Afeesh-NosMesalwa.ttf') format('truetype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #f5f5f7;
+      --card: #ffffff;
+      --ink: #0f0f10;
+      --muted: #6b7280;
+      --line: #0f0f10;
+      --accent: #0f0f10;
+      --radius: 14px;
+      --primary: #16243d;
+      --gold: #d4af37;
+      --health-green: #10b981;
+      --health-red: #ef4444;
+      --health-blue: #3b82f6;
+      --health-yellow: #f59e0b;
+      --emergency-red: #dc2626;
+      --emergency-glow: rgba(220, 38, 38, 0.2);
+    }
+    [data-theme="dark"] {
+      --bg: #121212; --card: #1e1e1e; --ink: #ffffff; --muted: #a0a0a0; --line: #333333;
+    }
+    [data-theme="dark"] .page-title,
+    [data-theme="dark"] .section-title,
+    [data-theme="dark"] .status-title {
+      color: var(--gold);
+    }
+    [data-theme="dark"] .status-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-color: #3b82f6;
+    }
+    [data-theme="dark"] .status-item {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    [data-theme="dark"] .close-btn {
+        background: #333; color: #fff;
+    }
+    [data-theme="dark"] .close-btn:hover { background: #444; }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Cairo', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .page {
+      min-height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    /* Phone-width centered container to resemble the mockup, but responsive */
+    .shell {
+      width: 100%;
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 0 #0f0f10;
+    }
+
+    header.brand {
+      text-align: center;
+      margin: 0;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 20px;
+      position: relative;
+    }
+    .logo-text {
+      font-family: 'Afeesh', sans-serif;
+      font-weight: 700;
+      font-size: 48px;
+      letter-spacing: 2px;
+      color: var(--gold);
+    }
+    .logo-sub {
+      font-family: 'Afeesh', sans-serif;
+      font-weight: 600;
+      color: #94a3b8;
+      font-size: 20px;
+      margin-top: 2px;
+      letter-spacing: 3px;
+    }
+    .home-btn {
+      position: absolute;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      color: var(--gold);
+      text-decoration: none;
+      font-size: 15px;
+      background-color: #0f0f10;
+      padding: 9px 12px;
+      border-radius: 999px;
+      transition: all 0.3s ease;
+    }
+    
+    .home-btn:hover {
+      background-color: var(--gold);
+      color: #0f0f10;
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    /* Translate Button Styles */
+    .translate-btn {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      background: var(--gold);
+      border: 2px solid #ffffff;
+      border-radius: 20px;
+      color: var(--primary);
+      padding: 6px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+      z-index: 100;
+    }
+    
+    .translate-btn:hover {
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.5);
+      background: #f7ef8a;
+    }
+    
+    .translate-btn .icon {
+      font-size: 16px;
+      transition: transform 0.3s ease;
+    }
+    
+    .translate-btn:hover .icon {
+      transform: rotate(20deg);
+    }
+    
+    .translate-btn.switching {
+      animation: pulse 0.5s ease;
+    }
+    
+    @keyframes pulse {
+      0% { transform: translateY(-50%) scale(1); }
+      50% { transform: translateY(-50%) scale(0.9); }
+      100% { transform: translateY(-50%) scale(1); }
+    }
+
+    h1, h2, h3, h4 { margin: 0; }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 14px 6px 8px;
+      color: var(--primary);
+    }
+
+    .page-description {
+      font-size: 15px;
+      color: var(--muted);
+      margin: 0 6px 20px;
+      line-height: 1.5;
+    }
+
+    /* Current Health Status */
+    .health-status-section {
+      margin: 20px 0;
+    }
+    .status-card {
+      padding: 16px;
+      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+      border: 2px solid var(--health-blue);
+      border-radius: var(--radius);
+    }
+    .status-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .status-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--health-blue);
+      color: white;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+    }
+    .status-title {
+      font-weight: 700;
+      font-size: 18px;
+      color: var(--primary);
+    }
+    .status-list {
+      display: grid;
+      gap: 8px;
+    }
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 8px;
+    }
+    .status-item-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+    }
+    [data-theme="dark"] .status-card {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border-color: #3b82f6;
+    }
+    [data-theme="dark"] .status-title {
+      color: #ffffff;
+    }
+    [data-theme="dark"] .status-item {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Health categories */
+    .health-categories {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      padding: 8px 4px 16px;
+    }
+    .health-cat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 8px;
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .health-cat:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 0 var(--line);
+    }
+    .health-cat.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .health-cat.active .health-emoji {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    .health-emoji {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 24px;
+      margin-bottom: 4px;
+    }
+    .health-cat .label {
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    /* Health conditions list */
+    .conditions-section {
+      margin: 20px 0;
+    }
+    .section-title {
+      font-weight: 700;
+      font-size: 20px;
+      margin: 6px 6px 14px;
+      color: var(--primary);
+    }
+
+    .conditions-list {
+      display: grid;
+      gap: 12px;
+      padding: 0 6px;
+    }
+    .condition-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .condition-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .condition-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+    }
+    .condition-text h4 {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .condition-text p {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 34px;
+      transition: .4s;
+    }
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      border-radius: 50%;
+      transition: .4s;
+    }
+    input:checked + .toggle-slider {
+      background-color: var(--health-green);
+    }
+    input:checked + .toggle-slider:before {
+      transform: translateX(24px);
+    }
+
+    /* Emergency section - Creative Design */
+    .emergency-section {
+      margin: 24px 0;
+      position: relative;
+    }
+    .emergency-card {
+      padding: 20px;
+      background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+      border: 3px solid var(--emergency-red);
+      border-radius: var(--radius);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 var(--emergency-glow); }
+      70% { box-shadow: 0 0 0 10px rgba(220, 38, 38, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0); }
+    }
+    .emergency-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--emergency-red);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 28px;
+      color: white;
+      margin: 0 auto 12px;
+      animation: shake 0.5s infinite alternate;
+    }
+    @keyframes shake {
+      from { transform: rotate(-5deg); }
+      to { transform: rotate(5deg); }
+    }
+    .emergency-title {
+      font-weight: 700;
+      font-size: 20px;
+      color: var(--emergency-red);
+      margin-bottom: 8px;
+    }
+    .emergency-text {
+      font-size: 14px;
+      margin-bottom: 20px;
+      color: #7f1d1d;
+    }
+    .emergency-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .emergency-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--emergency-red);
+      color: white;
+      padding: 12px 16px;
+      border-radius: 999px;
+      font-weight: 700;
+      text-decoration: none;
+      border: 2px solid var(--line);
+      transition: all 0.2s;
+    }
+    .emergency-btn:hover {
+      background: #b91c1c;
+      transform: scale(1.05);
+    }
+    .emergency-btn.secondary {
+      background: #f59e0b;
+    }
+    .emergency-btn.secondary:hover {
+      background: #d97706;
+    }
+
+    /* Privacy settings */
+    .privacy-section {
+      margin: 20px 0;
+    }
+    .privacy-options {
+      display: grid;
+      gap: 12px;
+      padding: 0 6px;
+    }
+    .privacy-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+    }
+    .privacy-text h4 {
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .privacy-text p {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* Medicine Reminder Styles */
+    .medication-section {
+      margin: 24px 0;
+    }
+    .add-btn {
+      background: var(--primary);
+      color: var(--gold);
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s;
+    }
+    .add-btn:active { transform: scale(0.9); }
+    
+    .medication-list { display: grid; gap: 10px; padding: 0 6px; }
+    .medication-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px; background: var(--card);
+      border: 2px solid var(--line); border-radius: var(--radius);
+    }
+    .med-info { display: flex; align-items: center; gap: 12px; }
+    .med-icon { font-size: 24px; }
+    .med-details h4 { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+    .med-time { font-size: 13px; color: var(--health-blue); font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    .med-actions { display: flex; align-items: center; gap: 10px; }
+    .delete-med-btn { background: none; border: none; font-size: 18px; cursor: pointer; opacity: 0.5; }
+    .delete-med-btn:hover { opacity: 1; color: var(--health-red); }
+
+    /* Modal Styles */
+    .modal {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); z-index: 2000;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal.active { display: flex; }
+    .modal-content {
+      background: var(--card); width: 100%; max-width: 400px;
+      border-radius: var(--radius); padding: 20px;
+      border: 2px solid var(--line);
+    }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+    .modal-title { font-weight: 700; font-size: 18px; color: var(--primary); }
+    [data-theme="dark"] .modal-title { color: var(--gold); }
+    .close-btn { 
+        background: #f0f0f0; border: none; font-size: 20px; cursor: pointer; color: #666; 
+        width: 32px; height: 32px; border-radius: 50%; display: flex; 
+        align-items: center; justify-content: center; transition: all 0.2s; 
+    }
+    .close-btn:hover { background: #e0e0e0; color: #000; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; margin-bottom: 8px; font-weight: 600; font-size: 14px; }
+    .form-input { 
+      width: 100%; padding: 12px; border: 2px solid var(--line); 
+      border-radius: 10px; background: var(--bg); color: var(--ink); font-family: inherit;
+    }
+    .modal-footer { display: flex; gap: 10px; }
+    .btn-primary { flex: 1; padding: 12px; background: var(--primary); color: var(--gold); border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+    .btn-secondary { flex: 1; padding: 12px; background: transparent; color: var(--ink); border: 2px solid var(--line); border-radius: 10px; font-weight: 700; cursor: pointer; }
+
+
+    /* Quick links */
+    .quick {
+      padding: 6px;
+      display: grid;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .quick .item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      background: var(--card);
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .quick .item .label {
+      flex: 1 1 auto;
+    }
+
+    /* Bottom search */
+    .bottom-search {
+      padding: 10px 6px 18px;
+    }
+    .search {
+      display: grid;
+      grid-template-columns: 28px 1fr;
+      align-items: center;
+      gap: 8px;
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 12px;
+      background: var(--card);
+    }
+    .search .glass {
+      text-align: center;
+      font-size: 16px;
+    }
+    .search input {
+      appearance: none;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      width: 100%;
+      font: inherit;
+      color: var(--ink);
+    }
+    .search input::placeholder {
+      color: var(--muted);
+    }
+
+    footer {
+      background: var(--primary);
+      color: #ffffff;
+      text-align: center;
+      font-size: 14px;
+      padding: 20px;
+    }
+
+    /* Notification styles */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: white;
+      padding: 15px 20px;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.3s ease;
+      max-width: 320px;
+    }
+    .notification-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--gold);
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+    }
+    .notification-content {
+      flex: 1;
+    }
+    .notification-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .notification-message {
+      font-size: 14px;
+      opacity: 0.9;
+    }
+    .notification-close {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0;
+      width: 24px;
+      height: 24px;
+      display: grid;
+      place-items: center;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+
+    /* Larger screens */
+    @media (min-width: 768px) {
+      .shell { padding: 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="brand">
+      <a href="home.html" class="home-btn" aria-label="الرئيسية" data-ar="رجوع" data-en="Back">رجوع</a>
+      <div class="logo-text">حــــــيــــاك</div>
+      <div class="logo-sub">HAYYAK</div>
+      <button class="translate-btn" id="translateBtn" aria-label="تبديل اللغة">
+        <span class="icon">🌐</span>
+        <span>English</span>
+      </button>
+    </header>
+    
+    <main class="shell">
+      <h1 class="page-title" data-ar="المشاكل الصحية/النفسية" data-en="Health & Psychological Issues">المشاكل الصحية/النفسية</h1>
+      <p class="page-description" data-ar="إدارة المشاكل الصحية والنفسية لتحسين تجربتك وتقديم التوصيات المناسبة لك" data-en="Manage health and psychological issues to improve your experience and provide appropriate recommendations">إدارة المشاكل الصحية والنفسية لتحسين تجربتك وتقديم التوصيات المناسبة لك</p>
+
+      <!-- Current Health Status Section -->
+      <div class="health-status-section">
+        <h2 class="section-title" data-ar="حالتي الصحية الحالية" data-en="My Current Health Status">حالتي الصحية الحالية</h2>
+        <div class="status-card" id="health-summary">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <div class="health-categories" id="health-categories">
+        <div class="health-cat active" data-category="all">
+          <div class="health-emoji" style="background: #e0f2fe;">👤</div>
+          <div class="label" data-ar="الكل" data-en="All">الكل</div>
+        </div>
+        <div class="health-cat" data-category="physical">
+          <div class="health-emoji" style="background: #dcfce7;">❤️</div>
+          <div class="label" data-ar="صحية" data-en="Physical">صحية</div>
+        </div>
+        <div class="health-cat" data-category="psychological">
+          <div class="health-emoji" style="background: #fef3c7;">🧠</div>
+          <div class="label" data-ar="نفسية" data-en="Psychological">نفسية</div>
+        </div>
+      </div>
+
+      <!-- Medicine Reminder Section -->
+      <div class="medication-section">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin: 6px 6px 14px;">
+          <h2 class="section-title" style="margin: 0;" data-ar="تذكير الأدوية" data-en="Medicine Reminders">تذكير الأدوية</h2>
+          <button class="add-btn" onclick="openAddMedModal()" aria-label="Add Medication">
+            <span>+</span>
+          </button>
+        </div>
+        <div class="medication-list" id="medication-list">
+          <!-- Meds will be populated here -->
+        </div>
+      </div>
+
+      <div class="conditions-section">
+        <h2 class="section-title" data-ar="حالاتي الصحية" data-en="My Health Conditions">حالاتي الصحية</h2>
+        <div class="conditions-list" id="conditions-list">
+          <!-- Conditions will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Emergency Section with Creative Design -->
+      <div class="emergency-section">
+        <h2 class="section-title">🚨 <span data-ar="اتصال الطوارئ" data-en="Emergency Contact">اتصال الطوارئ</span></h2>
+        <div class="emergency-card">
+          <div class="emergency-icon">🚨</div>
+          <div class="emergency-title" data-ar="حالة طارئة؟ لا تتردد!" data-en="Emergency? Don't hesitate!">حالة طارئة؟ لا تتردد!</div>
+          <p class="emergency-text" data-ar="خدمات الطوارئ متاحة على مدار 24 ساعة. اضغط على الزر الأحمر للاتصال المباشر" data-en="Emergency services are available 24/7. Press the red button for direct contact">خدمات الطوارئ متاحة على مدار 24 ساعة. اضغط على الزر الأحمر للاتصال المباشر</p>
+          <div class="emergency-buttons">
+            <a href="tel:998" class="emergency-btn">
+              <span>📞</span> <span data-ar="طوارئ (998)" data-en="Emergency (998)">طوارئ (998)</span>
+            </a>
+            <a href="tel:999" class="emergency-btn secondary">
+              <span>🚓</span> <span data-ar="شرطة (999)" data-en="Police (999)">شرطة (999)</span>
+            </a>
+          </div>
+          <div style="margin-top: 12px; font-size: 12px; color: #7f1d1d;" data-ar="متاح أيضاً: ٩٩٧ (الإسعاف) - ٩٩٦ (الدفاع المدني)" data-en="Also available: 997 (Ambulance) - 996 (Civil Defense)">
+            متاح أيضاً: ٩٩٧ (الإسعاف) - ٩٩٦ (الدفاع المدني)
+          </div>
+        </div>
+      </div>
+
+      <!-- Privacy Settings Section -->
+      <div class="privacy-section">
+        <h2 class="section-title" data-ar="إعدادات الخصوصية" data-en="Privacy Settings">إعدادات الخصوصية</h2>
+        <div class="privacy-options">
+          <div class="privacy-item">
+            <div class="privacy-text">
+              <h4 data-ar="مشاركة معلوماتي الصحية" data-en="Share My Health Information">مشاركة معلوماتي الصحية</h4>
+              <p data-ar="السماح للمطاعم والمتاجر بمعرفة متطلباتك الصحية" data-en="Allow restaurants and stores to know your health requirements">السماح للمطاعم والمتاجر بمعرفة متطلباتك الصحية</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="share-health-info">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="privacy-item">
+            <div class="privacy-text">
+              <h4 data-ar="توصيات مخصصة" data-en="Personalized Recommendations">توصيات مخصصة</h4>
+              <p data-ar="استخدام معلوماتك الصحية لتقديم توصيات مناسبة لك" data-en="Use your health information to provide appropriate recommendations">استخدام معلوماتك الصحية لتقديم توصيات مناسبة لك</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="personalized-recommendations">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          
+          <div class="privacy-item">
+            <div class="privacy-text">
+              <h4 data-ar="إشعارات الرعاية الصحية" data-en="Healthcare Notifications">إشعارات الرعاية الصحية</h4>
+              <p data-ar="تلقي تذكيرات ونصائح صحية بناءً على حالتك" data-en="Receive reminders and health tips based on your condition">تلقي تذكيرات ونصائح صحية بناءً على حالتك</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="health-notifications">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Links -->
+      <div class="bottom-search">
+        <div class="search">
+          <div class="glass">🔍</div>
+          <input type="search" 
+                 placeholder="ابحث عن حالة صحية أو دواء" 
+                 data-ar-placeholder="ابحث عن حالة صحية أو دواء" 
+                 data-en-placeholder="Search for health condition or medication" 
+                 aria-label="ابحث عن حالة صحية أو دواء" 
+                 id="health-search" />
+        </div>
+      </div>
+    </main>
+
+    <footer data-ar="© عبدالله بن ناصر - حياك" data-en="© Abdullah bin Nasser - Hayyak">© عبدالله بن ناصر - حياك</footer>
+  </div>
+
+  <!-- Add Medication Modal -->
+  <div id="add-med-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" data-ar="إضافة دواء جديد" data-en="Add New Medication">إضافة دواء جديد</div>
+        <button class="close-btn" onclick="closeAddMedModal()">×</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-ar="اسم الدواء" data-en="Medication Name">اسم الدواء</label>
+        <input type="text" id="med-name" class="form-input" placeholder="...">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-ar="وقت التذكير" data-en="Reminder Time">وقت التذكير</label>
+        <input type="time" id="med-time" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-ar="من تاريخ" data-en="From Date">من تاريخ</label>
+        <input type="date" id="med-start-date" class="form-input">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-ar="إلى تاريخ" data-en="To Date">إلى تاريخ</label>
+        <input type="date" id="med-end-date" class="form-input">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-primary" onclick="addMedication()" data-ar="حفظ" data-en="Save">حفظ</button>
+        <button class="btn-secondary" onclick="closeAddMedModal()" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Medication Confirmation Modal -->
+  <div id="delete-med-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title" data-ar="تأكيد الحذف" data-en="Confirm Delete">تأكيد الحذف</div>
+        <button class="close-btn" onclick="closeDeleteMedModal()">×</button>
+      </div>
+      <div style="margin-bottom: 20px; font-size: 15px; color: var(--ink);" data-ar="هل أنت متأكد أنك تريد حذف هذا الدواء؟" data-en="Are you sure you want to delete this medication?">هل أنت متأكد أنك تريد حذف هذا الدواء؟</div>
+      <div class="modal-footer">
+        <button class="btn-primary" style="background: var(--health-red); color: white;" onclick="confirmDeleteMedication()" data-ar="حذف" data-en="Delete">حذف</button>
+        <button class="btn-secondary" onclick="closeDeleteMedModal()" data-ar="إلغاء" data-en="Cancel">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // بيانات الحالات الصحية
+    const healthConditions = [
+      {
+        id: 2,
+        name: "السكري",
+        description: "النوع الثاني - يحتاج مراقبة السكر",
+        category: "physical",
+        icon: "💉",
+        color: "#dcfce7",
+        enabled: true,
+        medication: "ميتفورمين",
+        medicationTime: "صباحاً ومساءً",
+        nameEn: "Diabetes",
+        descriptionEn: "Type 2 - Requires sugar monitoring",
+        medicationEn: "Metformin",
+        medicationTimeEn: "Morning and evening"
+      },
+      {
+        id: 3,
+        name: "ضغط الدم",
+        description: "ضغط دم مرتفع - يحتاج مراقبة",
+        category: "physical",
+        icon: "🫀",
+        color: "#fee2e2",
+        enabled: false,
+        medication: "أملوديبين",
+        medicationTime: "صباحاً",
+        nameEn: "High Blood Pressure",
+        descriptionEn: "High blood pressure - Requires monitoring",
+        medicationEn: "Amlodipine",
+        medicationTimeEn: "Morning"
+      },
+      {
+        id: 4,
+        name: "القلق",
+        description: "قلق عام - يحتاج أماكن هادئة",
+        category: "psychological",
+        icon: "😰",
+        color: "#e0e7ff",
+        enabled: true,
+        medication: "سيرترالين",
+        medicationTime: "مساءً",
+        nameEn: "Anxiety",
+        descriptionEn: "General anxiety - Needs quiet places",
+        medicationEn: "Sertraline",
+        medicationTimeEn: "Evening"
+      },
+      {
+        id: 5,
+        name: "الاكتئاب",
+        description: "اكتئاب خفيف - يحتاج دعم",
+        category: "psychological",
+        icon: "😔",
+        color: "#f3e8ff",
+        enabled: false,
+        medication: "فلوكستين",
+        medicationTime: "صباحاً",
+        nameEn: "Depression",
+        descriptionEn: "Mild depression - Needs support",
+        medicationEn: "Fluoxetine",
+        medicationTimeEn: "Morning"
+      },
+      {
+        id: 7,
+        name: "الأرق",
+        description: "صعوبة في النوم",
+        category: "psychological",
+        icon: "😴",
+        color: "#e0e7ff",
+        enabled: true,
+        medication: "الميلاتونين",
+        medicationTime: "قبل النوم بـ ساعة",
+        nameEn: "Insomnia",
+        descriptionEn: "Difficulty sleeping",
+        medicationEn: "Melatonin",
+        medicationTimeEn: "1 hour before bedtime"
+      }
+    ];
+
+    // بيانات النصائح الصحية
+    const healthTips = [
+      "💊 تذكر تناول أدويتك في موعدها",
+      "🥗 تناول وجبة إفطار صحية لتبدأ يومك بنشاط",
+      "💧 اشرب 8 أكواب من الماء يومياً",
+      "🚶‍♂️ امشِ 30 دقيقة يومياً لصحة قلبك",
+      "🧘‍♂️ خذ قسطاً من الراحة والتأمل لتخفيف القلق",
+      "📋 تابع قراءة السكر بانتظام إذا كنت مريض سكري",
+      "😊 الابتسام يقلل التوتر ويحسن المزاج",
+      "🥦 تجنب الأطعمة المسببة للحساسية",
+      "🌞 تعرض لأشعة الشمس الصباحية لفيتامين د",
+      "🧠 تمرن عقلك بالقراءة والألعاب الذهنية"
+    ];
+
+    // English health tips
+    const healthTipsEn = [
+      "💊 Remember to take your medications on time",
+      "🥗 Eat a healthy breakfast to start your day energetically",
+      "💧 Drink 8 glasses of water daily",
+      "🚶‍♂️ Walk 30 minutes daily for heart health",
+      "🧘‍♂️ Take a break and meditate to reduce anxiety",
+      "📋 Monitor your sugar regularly if you have diabetes",
+      "😊 Smiling reduces stress and improves mood",
+      "🥦 Avoid foods that cause allergies",
+      "🌞 Get morning sun exposure for Vitamin D",
+      "🧠 Exercise your brain with reading and mental games"
+    ];
+
+    // Language state
+    let currentLanguage = 'ar';
+
+    // Translation function
+    function toggleLanguage() {
+      const btn = document.getElementById('translateBtn');
+      btn.classList.add('switching');
+      
+      // Switch language
+      currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+      
+      // Update button text
+      const langText = btn.querySelector('span:last-child');
+      langText.textContent = currentLanguage === 'ar' ? 'English' : 'العربية';
+      
+      // Update page direction
+      document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = currentLanguage;
+      
+      // Update page title
+      document.title = currentLanguage === 'ar' ? 'المشاكل الصحية/النفسية | حياك' : 'Health & Psychological Issues | Hayyak';
+      
+      // Translate all content including header and footer
+      translateAllContent();
+      
+      // Re-render health summary
+      renderHealthSummary();
+      
+      // Re-render conditions list
+      const activeCategory = document.querySelector('.health-cat.active').dataset.category;
+      renderConditions(activeCategory);
+      
+      // Re-render medications
+      renderMedications();
+      
+      // Show notification
+      showNotification(currentLanguage === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English');
+      
+      // Remove animation class
+      setTimeout(() => {
+        btn.classList.remove('switching');
+      }, 500);
+    }
+    
+    // Translate all content including header and footer
+    function translateAllContent() {
+      // Translate elements with data attributes in the entire document
+      document.querySelectorAll('[data-ar], [data-en]').forEach(element => {
+        if (element.hasAttribute('data-ar') && element.hasAttribute('data-en')) {
+          element.textContent = currentLanguage === 'ar' ? element.getAttribute('data-ar') : element.getAttribute('data-en');
+        }
+      });
+      
+      // Translate placeholders
+      document.querySelectorAll('[data-ar-placeholder], [data-en-placeholder]').forEach(element => {
+        if (element.hasAttribute('data-ar-placeholder') && element.hasAttribute('data-en-placeholder')) {
+          element.placeholder = currentLanguage === 'ar' ? element.getAttribute('data-ar-placeholder') : element.getAttribute('data-en-placeholder');
+        }
+      });
+      
+      // Update aria-label for home button
+      const homeBtn = document.querySelector('.home-btn');
+      if (homeBtn) {
+        homeBtn.setAttribute('aria-label', currentLanguage === 'ar' ? 'الرئيسية' : 'Home');
+      }
+      
+      // Update aria-label for translate button
+      const translateBtn = document.getElementById('translateBtn');
+      if (translateBtn) {
+        translateBtn.setAttribute('aria-label', currentLanguage === 'ar' ? 'تبديل اللغة' : 'Toggle Language');
+      }
+      
+      // Update aria-label for search input
+      const searchInput = document.getElementById('health-search');
+      if (searchInput) {
+        searchInput.setAttribute('aria-label', currentLanguage === 'ar' ? 'ابحث عن حالة صحية أو دواء' : 'Search for health condition or medication');
+      }
+
+      // Translate modal inputs placeholders
+      const medNameInput = document.getElementById('med-name');
+      if (medNameInput) {
+        medNameInput.placeholder = currentLanguage === 'ar' ? 'أدخل اسم الدواء' : 'Enter medication name';
+      }
+    }
+
+    // تحميل البيانات المحفوظة من localStorage
+    function loadHealthConditions() {
+      const savedConditions = localStorage.getItem('hayyak_health_conditions');
+      if (savedConditions) {
+        return JSON.parse(savedConditions);
+      }
+      // حفظ البيانات الأساسية إذا لم تكن موجودة
+      saveHealthConditions(healthConditions);
+      return healthConditions;
+    }
+
+    // حفظ البيانات إلى localStorage
+    function saveHealthConditions(conditions) {
+      localStorage.setItem('hayyak_health_conditions', JSON.stringify(conditions));
+    }
+
+    // تحميل إعدادات الخصوصية
+    function loadPrivacySettings() {
+      return {
+        shareHealthInfo: localStorage.getItem('shareHealthInfo') !== 'false',
+        personalizedRecommendations: localStorage.getItem('personalizedRecommendations') !== 'false',
+        healthNotifications: localStorage.getItem('healthNotifications') !== 'false'
+      };
+    }
+
+    // حفظ إعدادات الخصوصية
+    function savePrivacySettings() {
+      const settings = {
+        shareHealthInfo: document.getElementById('share-health-info').checked,
+        personalizedRecommendations: document.getElementById('personalized-recommendations').checked,
+        healthNotifications: document.getElementById('health-notifications').checked
+      };
+      
+      localStorage.setItem('shareHealthInfo', settings.shareHealthInfo);
+      localStorage.setItem('personalizedRecommendations', settings.personalizedRecommendations);
+      localStorage.setItem('healthNotifications', settings.healthNotifications);
+      
+      return settings;
+    }
+
+    // تحميل بيانات الملف الشخصي
+    function loadProfileData() {
+      return JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+    }
+
+    // عرض ملخص الحالة الصحية
+    function renderHealthSummary() {
+      const conditions = loadHealthConditions();
+      const activeConditions = conditions.filter(c => c.enabled);
+      const physicalConditions = activeConditions.filter(c => c.category === 'physical');
+      const psychologicalConditions = activeConditions.filter(c => c.category === 'psychological');
+      
+      const summaryHtml = `
+        <div class="status-header">
+          <div class="status-icon">📋</div>
+          <div class="status-title">${currentLanguage === 'ar' ? 'ملخص صحتي' : 'My Health Summary'}</div>
+        </div>
+        <div class="status-list">
+          <div class="status-item">
+            <div class="status-item-icon" style="background: #dcfce7;">❤️</div>
+            <div>${currentLanguage === 'ar' ? 'الحالات الصحية النشطة:' : 'Active Physical Conditions:'} ${physicalConditions.length}</div>
+          </div>
+          <div class="status-item">
+            <div class="status-item-icon" style="background: #fef3c7;">🧠</div>
+            <div>${currentLanguage === 'ar' ? 'الحالات النفسية النشطة:' : 'Active Psychological Conditions:'} ${psychologicalConditions.length}</div>
+          </div>
+          <div class="status-item">
+            <div class="status-item-icon" style="background: #e0f2fe;">💊</div>
+            <div>${currentLanguage === 'ar' ? 'الأدوية اليومية:' : 'Daily Medications:'} ${activeConditions.filter(c => c.medication).length}</div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('health-summary').innerHTML = summaryHtml;
+    }
+
+    // عرض قائمة الحالات الصحية
+    function renderConditions(category = 'all') {
+      const conditions = loadHealthConditions();
+      const container = document.getElementById('conditions-list');
+      
+      let filteredConditions = conditions;
+      if (category !== 'all') {
+        filteredConditions = conditions.filter(cond => cond.category === category);
+      }
+      
+      container.innerHTML = filteredConditions.map(condition => {
+        const name = currentLanguage === 'ar' ? condition.name : (condition.nameEn || condition.name);
+        const description = currentLanguage === 'ar' ? condition.description : (condition.descriptionEn || condition.description);
+        const medication = currentLanguage === 'ar' ? condition.medication : (condition.medicationEn || condition.medication);
+        const medicationTime = currentLanguage === 'ar' ? condition.medicationTime : (condition.medicationTimeEn || condition.medicationTime);
+        
+        return `
+          <div class="condition-item" data-id="${condition.id}">
+            <div class="condition-info">
+              <div class="condition-icon" style="background: ${condition.color}">
+                ${condition.icon}
+              </div>
+              <div class="condition-text">
+                <h4>${name}</h4>
+                <p>${description}</p>
+                ${condition.enabled && medication ? 
+                  `<div style="font-size: 11px; color: #10b981; margin-top: 2px;">
+                    💊 ${medication} - ${medicationTime}
+                  </div>` : ''
+                }
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" ${condition.enabled ? 'checked' : ''} onchange="toggleCondition(${condition.id})">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // تبديل تفعيل/تعطيل حالة صحية
+    function toggleCondition(id) {
+      const conditions = loadHealthConditions();
+      const index = conditions.findIndex(cond => cond.id === id);
+      
+      if (index !== -1) {
+        conditions[index].enabled = !conditions[index].enabled;
+        saveHealthConditions(conditions);
+        
+        // تحديث الملخص
+        renderHealthSummary();
+        
+        // إظهار رسالة تأكيد
+        const conditionName = currentLanguage === 'ar' ? conditions[index].name : (conditions[index].nameEn || conditions[index].name);
+        const message = currentLanguage === 'ar' ? 
+          `تم ${conditions[index].enabled ? 'تفعيل' : 'تعطيل'} ${conditionName}` :
+          `${conditionName} has been ${conditions[index].enabled ? 'enabled' : 'disabled'}`;
+        
+        showNotification(message);
+      }
+    }
+
+    // عرض الإشعار
+    function showNotification(message, type = 'info') {
+      // إزالة أي إشعارات سابقة
+      const existingNotification = document.querySelector('.notification');
+      if (existingNotification) {
+        existingNotification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => existingNotification.remove(), 300);
+      }
+      
+      // إنشاء عنصر الإشعار الجديد
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.innerHTML = `
+        <div class="notification-icon">${type === 'emergency' ? '🚨' : '💡'}</div>
+        <div class="notification-content">
+          <div class="notification-title">${type === 'emergency' ? 
+            (currentLanguage === 'ar' ? 'تنبيه صحي' : 'Health Alert') : 
+            (currentLanguage === 'ar' ? 'نصيحة صحية' : 'Health Tip')}</div>
+          <div class="notification-message">${message}</div>
+        </div>
+        <button class="notification-close" onclick="this.parentElement.style.animation='slideOut 0.3s ease'; setTimeout(() => this.parentElement.remove(), 300)">×</button>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // إزالة الإشعار تلقائياً بعد 5 ثوانٍ
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.style.animation = 'slideOut 0.3s ease';
+          setTimeout(() => notification.remove(), 300);
+        }
+      }, 5000);
+    }
+
+    // إظهار نصائح صحية (لصفحة index.html)
+    function showHealthAdvice() {
+      const settings = loadPrivacySettings();
+      
+      // فقط إذا كان المستخدم مفعل إشعارات الرعاية الصحية
+      if (settings.healthNotifications) {
+        const randomTip = currentLanguage === 'ar' ? 
+          healthTips[Math.floor(Math.random() * healthTips.length)] :
+          healthTipsEn[Math.floor(Math.random() * healthTipsEn.length)];
+        
+        // التحقق من الصفحة الحالية
+        if (window.location.pathname.includes('index.html') || 
+            window.location.pathname.endsWith('/')) {
+          // انتظر حتى يتم تحميل الصفحة بالكامل
+          setTimeout(() => {
+            showNotification(randomTip, 'info');
+          }, 2000);
+        }
+      }
+    }
+
+    // إظهار أماكن زارها المستخدم (وهمي)
+    function showVisitedPlaces() {
+      const message = currentLanguage === 'ar' ? 
+        "سيتم عرض الأماكن التي زرتها قريباً" : 
+        "Visited places will be shown soon";
+      showNotification(message);
+    }
+
+    // البحث في الحالات الصحية
+    document.getElementById('health-search').addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase();
+      const conditions = loadHealthConditions();
+      const container = document.getElementById('conditions-list');
+      
+      if (!searchTerm) {
+        const activeCategory = document.querySelector('.health-cat.active').dataset.category;
+        renderConditions(activeCategory);
+        return;
+      }
+      
+      const filteredConditions = conditions.filter(cond => {
+        const name = currentLanguage === 'ar' ? cond.name : (cond.nameEn || cond.name);
+        const description = currentLanguage === 'ar' ? cond.description : (cond.descriptionEn || cond.description);
+        const medication = currentLanguage === 'ar' ? cond.medication : (cond.medicationEn || cond.medication);
+        
+        return name.toLowerCase().includes(searchTerm) || 
+               description.toLowerCase().includes(searchTerm) ||
+               (medication && medication.toLowerCase().includes(searchTerm));
+      });
+      
+      container.innerHTML = filteredConditions.map(condition => {
+        const name = currentLanguage === 'ar' ? condition.name : (condition.nameEn || condition.name);
+        const description = currentLanguage === 'ar' ? condition.description : (condition.descriptionEn || condition.description);
+        
+        return `
+          <div class="condition-item" data-id="${condition.id}">
+            <div class="condition-info">
+              <div class="condition-icon" style="background: ${condition.color}">
+                ${condition.icon}
+              </div>
+              <div class="condition-text">
+                <h4>${name}</h4>
+                <p>${description}</p>
+              </div>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" ${condition.enabled ? 'checked' : ''} onchange="toggleCondition(${condition.id})">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        `;
+      }).join('');
+    });
+
+    // تصفية الحالات حسب الفئة
+    document.querySelectorAll('.health-cat').forEach(cat => {
+      cat.addEventListener('click', function() {
+        // إزالة النشط من جميع الفئات
+        document.querySelectorAll('.health-cat').forEach(c => c.classList.remove('active'));
+        // إضافة النشط للفئة المحددة
+        this.classList.add('active');
+        
+        const category = this.dataset.category;
+        renderConditions(category);
+      });
+    });
+
+    // إعدادات الخصوصية - معالجة التغييرات
+    document.getElementById('share-health-info').addEventListener('change', function() {
+      savePrivacySettings();
+      
+      const profile = loadProfileData();
+      const conditions = loadHealthConditions();
+      const activeConditions = conditions.filter(c => c.enabled);
+      
+      if (this.checked) {
+        // حفظ الحالات الصحية النشطة في الملف الشخصي
+        profile.healthConditions = activeConditions.map(c => 
+          currentLanguage === 'ar' ? c.name : (c.nameEn || c.name)
+        );
+        localStorage.setItem('hayyak_user_profile', JSON.stringify(profile));
+        showNotification(currentLanguage === 'ar' ? 
+          "سيتم مشاركة معلوماتك الصحية مع المطاعم والمتاجر" : 
+          "Your health information will be shared with restaurants and stores");
+      } else {
+        // إزالة الحالات الصحية من الملف الشخصي
+        delete profile.healthConditions;
+        localStorage.setItem('hayyak_user_profile', JSON.stringify(profile));
+        showNotification(currentLanguage === 'ar' ? 
+          "تم إيقاف مشاركة معلوماتك الصحية" : 
+          "Health information sharing has been stopped");
+      }
+    });
+
+    document.getElementById('personalized-recommendations').addEventListener('change', function() {
+      savePrivacySettings();
+      showNotification(this.checked ? 
+        (currentLanguage === 'ar' ? 
+          "ستحصل على توصيات مخصصة بناءً على حالتك الصحية" : 
+          "You will receive personalized recommendations based on your health condition") : 
+        (currentLanguage === 'ar' ? 
+          "تم إيقاف التوصيات المخصصة" : 
+          "Personalized recommendations have been stopped"));
+    });
+
+    document.getElementById('health-notifications').addEventListener('change', function() {
+      savePrivacySettings();
+        
+        // Request permission for real notifications if enabled
+        if (this.checked && "Notification" in window && Notification.permission !== "granted") {
+          Notification.requestPermission();
+        }
+        
+      showNotification(this.checked ? 
+        (currentLanguage === 'ar' ? 
+          "ستتلقى نصائح وتذكيرات صحية" : 
+          "You will receive health tips and reminders") : 
+        (currentLanguage === 'ar' ? 
+          "تم إيقاف الإشعارات الصحية" : 
+          "Health notifications have been stopped"));
+    });
+
+    // ==================== MEDICINE REMINDER SYSTEM ====================
+    let medications = JSON.parse(localStorage.getItem('hayyak_medications') || '[]');
+
+    function renderMedications() {
+      const list = document.getElementById('medication-list');
+      if (medications.length === 0) {
+        list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--muted); font-size:14px;">
+          ${currentLanguage === 'ar' ? 'لا توجد أدوية مضافة' : 'No medications added'}
+        </div>`;
+        return;
+      }
+
+      list.innerHTML = medications.map((med, index) => `
+        <div class="medication-item">
+          <div class="med-info">
+            <div class="med-icon">💊</div>
+            <div class="med-details">
+              <h4>${med.name}</h4>
+              <div class="med-time">⏰ ${formatTime(med.time)}</div>
+              <div class="med-date" style="font-size: 11px; color: var(--muted); margin-top: 2px;">
+                 📅 ${med.startDate || '?'} ➡ ${med.endDate || '?'}
+              </div>
+            </div>
+          </div>
+          <div class="med-actions">
+            <label class="toggle-switch">
+              <input type="checkbox" ${med.active ? 'checked' : ''} onchange="toggleMedication(${index})">
+              <span class="toggle-slider"></span>
+            </label>
+            <button class="delete-med-btn" onclick="deleteMedication(${index})">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function formatTime(timeStr) {
+      // Simple 12h format
+      const [h, m] = timeStr.split(':');
+      const date = new Date();
+      date.setHours(h, m);
+      return date.toLocaleTimeString(currentLanguage === 'ar' ? 'ar-AE' : 'en-US', { hour: 'numeric', minute: '2-digit' });
+    }
+
+    function openAddMedModal() {
+      document.getElementById('add-med-modal').classList.add('active');
+      document.getElementById('med-name').value = '';
+      document.getElementById('med-time').value = '';
+      document.getElementById('med-start-date').value = '';
+      document.getElementById('med-end-date').value = '';
+    }
+
+    function closeAddMedModal() {
+      document.getElementById('add-med-modal').classList.remove('active');
+    }
+
+    function addMedication() {
+      const name = document.getElementById('med-name').value.trim();
+      const time = document.getElementById('med-time').value;
+      const startDate = document.getElementById('med-start-date').value;
+      const endDate = document.getElementById('med-end-date').value;
+
+      if (!name || !time || !startDate || !endDate) {
+        showNotification(currentLanguage === 'ar' ? 'الرجاء إدخال جميع البيانات' : 'Please enter all details', 'emergency');
+        return;
+      }
+
+      // Request notification permission if not granted
+      if ("Notification" in window && Notification.permission !== "granted") {
+        Notification.requestPermission();
+      }
+
+      medications.push({ name, time, startDate, endDate, active: true });
+      localStorage.setItem('hayyak_medications', JSON.stringify(medications));
+      renderMedications();
+      closeAddMedModal();
+      showNotification(currentLanguage === 'ar' ? 'تم إضافة الدواء بنجاح' : 'Medication added successfully');
+    }
+
+    let medToDeleteIndex = null;
+
+    function deleteMedication(index) {
+      medToDeleteIndex = index;
+      document.getElementById('delete-med-modal').classList.add('active');
+    }
+
+    function closeDeleteMedModal() {
+      document.getElementById('delete-med-modal').classList.remove('active');
+      medToDeleteIndex = null;
+    }
+
+    function confirmDeleteMedication() {
+      if (medToDeleteIndex !== null) {
+        medications.splice(medToDeleteIndex, 1);
+        localStorage.setItem('hayyak_medications', JSON.stringify(medications));
+        renderMedications();
+        closeDeleteMedModal();
+        showNotification(currentLanguage === 'ar' ? 'تم حذف الدواء' : 'Medication deleted');
+      }
+    }
+
+    function toggleMedication(index) {
+      medications[index].active = !medications[index].active;
+      localStorage.setItem('hayyak_medications', JSON.stringify(medications));
+    }
+
+    // Check for reminders every minute
+    setInterval(() => {
+      const now = new Date();
+      const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const today = now.toISOString().split('T')[0];
+      
+      medications.forEach(med => {
+        // Check if active, time matches, and date is within range (if dates exist)
+        const isDateInRange = (!med.startDate || !med.endDate) || (today >= med.startDate && today <= med.endDate);
+        
+        if (med.active && med.time === currentTime && isDateInRange && now.getSeconds() < 5) {
+          const title = currentLanguage === 'ar' ? 'وقت الدواء' : 'Medication Time';
+          const body = `${med.name}`;
+          
+          showNotification(`${title}: ${body}`, 'info');
+          
+          // System Notification (Real Notification)
+          if ("Notification" in window && Notification.permission === "granted") {
+            new Notification(title, { body: body, icon: 'favicon.jpeg' });
+          }
+        }
+      });
+    }, 5000); // Check every 5 seconds to be safe
+
+    // تحقق من وجود ملف المستخدم
+    const userProfile = JSON.parse(localStorage.getItem('hayyak_user_profile'));
+    if (!userProfile) {
+      window.location.href = 'index.html';
+    }
+
+    // التهيئة الأولية
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add click event to translate button
+      document.getElementById('translateBtn').addEventListener('click', toggleLanguage);
+      
+      // Apply profile language
+      if (userProfile && userProfile.language && userProfile.language !== currentLanguage) {
+        currentLanguage = userProfile.language;
+        document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = currentLanguage;
+        const btn = document.getElementById('translateBtn');
+        if (btn) {
+          const langText = btn.querySelector('span:last-child');
+          if (langText) langText.textContent = currentLanguage === 'ar' ? 'English' : 'العربية';
+        }
+        translateAllContent();
+      }
+      
+      // Apply Theme
+      if (userProfile.theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+
+      // Initial rendering
+      renderHealthSummary();
+      renderConditions();
+      renderMedications();
+      
+      // تحميل إعدادات الخصوصية
+      const settings = loadPrivacySettings();
+      document.getElementById('share-health-info').checked = settings.shareHealthInfo;
+      document.getElementById('personalized-recommendations').checked = settings.personalizedRecommendations;
+      document.getElementById('health-notifications').checked = settings.healthNotifications;
+      
+      // إضافة أنماط للرسوم المتحركة
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes slideIn {
+          from { transform: translateX(100%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+          from { transform: translateX(0); opacity: 1; }
+          to { transform: translateX(100%); opacity: 0; }
+        }
+      `;
+      document.head.appendChild(style);
+      
+      // عرض نصيحة صحية إذا كانت الإشعارات مفعلة
+      if (settings.healthNotifications) {
+        setTimeout(() => {
+          const randomTip = currentLanguage === 'ar' ? 
+            healthTips[Math.floor(Math.random() * healthTips.length)] :
+            healthTipsEn[Math.floor(Math.random() * healthTipsEn.length)];
+          showNotification(randomTip, 'info');
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>

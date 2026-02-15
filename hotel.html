@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>حياك | فنادق</title>
+  <meta name="description" content="اكتشف أفضل الفنادق في الإمارات مع حياك. تصفح الفنادق حسب المدينة، التقييم، السعر، والمسافة من موقعك." />
+  <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+
+  <!-- Google Fonts: Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Afeesh family (local) */
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Aadi.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Aadi.woff') format('woff'),
+           url('./afeesh/Afeesh-Aadi.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Mekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Mekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-Mekalbaz.ttf') format('truetype');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-NosMekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-NosMekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-NosMekalbaz.ttf') format('truetype');
+      font-weight: 600; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-NosMesalwa.woff2') format('woff2'),
+           url('./afeesh/Afeesh-NosMesalwa.woff') format('woff'),
+           url('./afeesh/Afeesh-NosMesalwa.ttf') format('truetype');
+      font-weight: 300; font-style: normal; font-display: swap;
+    }
+
+    :root {
+      --bg: #f5f5f7; --card: #ffffff; --ink: #0f0f10; --muted: #6b7280; --line: #0f0f10; --radius: 14px;
+    }
+    [data-theme="dark"] {
+      --bg: #121212; --card: #1e1e1e; --ink: #ffffff; --muted: #a0a0a0; --line: #333333;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; background:var(--bg); margin:0; padding:0}
+    body{font-family:'Cairo', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--ink)}
+
+    header.brand{text-align:center; background:#16243d; color:#ffffff; padding:20px; position:relative}
+    .logo-text {
+      font-family: 'Afeesh', sans-serif;
+      font-weight: 700;
+      font-size: 48px;
+      letter-spacing: 2px;
+      color: #d4af37;
+    }
+    .logo-sub {
+      font-family: 'Afeesh', sans-serif;
+      font-weight: 600;
+      color: #94a3b8;
+      font-size: 20px;
+      margin-top: 2px;
+      letter-spacing: 3px;
+    }
+    .home-btn {
+      position: absolute;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      color: #d4af37;
+      text-decoration: none;
+      font-size: 15px;
+      background-color: #0f0f10;
+      padding: 9px 12px;
+      border-radius: 999px;
+    }
+
+    /* Translate Button Styles */
+    .translate-btn {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      background: #d4af37;
+      border: 2px solid #ffffff;
+      border-radius: 20px;
+      color: #16243d;
+      padding: 6px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+      z-index: 100;
+    }
+    
+    .translate-btn:hover {
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.5);
+      background: #f7ef8a;
+    }
+    
+    .translate-btn .icon {
+      font-size: 16px;
+      transition: transform 0.3s ease;
+    }
+    
+    .translate-btn:hover .icon {
+      transform: rotate(20deg);
+    }
+    
+    .translate-btn.switching {
+      animation: pulse 0.5s ease;
+    }
+    
+    @keyframes pulse {
+      0% { transform: translateY(-50%) scale(1); }
+      50% { transform: translateY(-50%) scale(0.9); }
+      100% { transform: translateY(-50%) scale(1); }
+    }
+
+    main.shell{padding:12px; max-width:420px; margin:0 auto; width:100%}
+
+    .card{background:var(--card); border:2px solid var(--line); border-radius:var(--radius); box-shadow:0 2px 0}
+
+    .map{height:180px; border-radius:var(--radius); overflow:hidden; margin-bottom:10px}
+    .map iframe{width:100%; height:100%; border:0}
+
+    .section-title{display:flex; align-items:center; gap:8px; margin:16px 0 10px; font-size:16px; font-weight:700; color:var(--ink)}
+    .section-title .emoji{font-size:20px}
+
+    .list{display:grid; gap:8px; margin-bottom:12px}
+    .item{display:grid; grid-template-columns:36px 80px 1fr; gap:8px; padding:12px; background:var(--card); border:2px solid var(--line); border-radius:999px; cursor:pointer; transition:all 0.2s; align-items:center}
+    .item:hover{background:#f5f5f7; transform:translateX(-4px)}
+    .pin{text-align:center; font-size:18px}
+    .thumb{width:80px; height:48px; object-fit:cover; border-radius:6px}
+    .label{display:flex; flex-direction:column; gap:4px}
+    .label span{font-weight:700; font-size:13px; color:var(--ink); line-height:1.2}
+    .distance-badge{font-size:11px; color:#666; font-weight:400}
+    .rating-badge{font-size:11px; color:#ff9800; font-weight:600}
+
+    .filter-group{display:grid; gap:8px}
+    .filter-label{font-weight:700; font-size:14px; color:var(--muted)}
+    .city-select{width:100%; padding:10px 12px; border:2px solid var(--line); border-radius:var(--radius); background:var(--card); font:inherit; cursor:pointer}
+    .sort-buttons{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px}
+    .sort-btn{padding:10px 8px; border:2px solid var(--line); border-radius:var(--radius); background:var(--card); cursor:pointer; font:inherit; font-weight:600; font-size:12px; transition:all 0.2s}
+    .sort-btn.active{background:#0f0f10; color:#ffffff}
+    .sort-btn:hover{background:#f5f5f7}
+
+    .info-panel{display:none; margin-top:10px; padding:14px; animation:fade 0.4s}
+    .info-panel.active{display:block}
+    .info-desc{font-size:14px; line-height:1.6; color:var(--muted); margin-bottom:16px}
+    .info-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    .info-box{background:var(--bg); padding:12px; border-radius:12px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:4px}
+    .ib-icon{font-size:24px; margin-bottom:4px}
+    .ib-label{font-size:12px; color:var(--muted); font-weight:600}
+    .ib-val{font-size:14px; font-weight:700; color:var(--ink)}
+    @keyframes fade{from{opacity:0; transform:translateY(-10px)}to{opacity:1; transform:translateY(0)}}
+
+    .bottom-search{padding:12px 0 18px; position:relative}
+    .search{display:grid; grid-template-columns:28px 1fr; align-items:center; gap:8px; border:2px solid var(--line); border-radius:999px; padding:10px 12px; background:var(--card)}
+    .glass{text-align:center}
+    .search input{appearance:none; border:0; outline:0; background:transparent; width:100%; font:inherit; color:var(--ink)}
+    .search input::placeholder{color:var(--muted)}
+
+    .autocomplete-list{display:none; position:absolute; top:100%; left:0; right:0; background:var(--card); border:2px solid var(--line); border-top:0; border-radius:0 0 var(--radius) var(--radius); max-height:200px; overflow-y:auto; z-index:100}
+    .autocomplete-list.active{display:block}
+    .autocomplete-item{padding:12px; border-bottom:1px solid var(--line); cursor:pointer; transition:background 0.2s}
+    .autocomplete-item:hover{background:#f5f5f7}
+    .autocomplete-item:last-child{border-bottom:none}
+    .autocomplete-item-name{font-weight:700; color:var(--ink)}
+    .autocomplete-item-desc{font-size:12px; color:var(--muted); margin-top:2px}
+
+     footer {
+      background: #16243d;
+      color: #ffffff;
+      text-align: center;
+      font-size: 14px;
+      padding: 20px;
+    }
+
+    @media (min-width:768px){.shell{padding:24px} .map{height:220px}}
+
+    .error-toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #ef4444;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    .error-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <header class="brand">
+    <a href="home.html" class="home-btn" aria-label="الرئيسية" data-ar="رجوع" data-en="Back">رجوع</a>
+    <div class="logo-text">حــــــيــــاك</div>
+    <div class="logo-sub">HAYYAK</div>
+    <button class="translate-btn" id="translateBtn" aria-label="تبديل اللغة">
+      <span class="icon">🌐</span>
+      <span>English</span>
+    </button>
+  </header>
+  <div id="error-toast" class="error-toast"></div>
+  <main class="shell">
+    <div class="map card" aria-label="خريطة" data-ar-label="خريطة" data-en-label="Map">
+      <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=51.50,22.50,56.50,26.20&amp;layer=mapnik" title="Map"></iframe>
+    </div>
+
+    <div id="info-panel" class="card info-panel">
+      <h3 id="p-title" style="margin:0 0 8px"></h3>
+      <div id="p-desc" class="info-desc"></div>
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="ib-icon">⭐</div>
+          <div class="ib-label" data-ar="التقييم" data-en="Rating">التقييم</div>
+          <div class="ib-val" id="p-rating"></div>
+        </div>
+        <div class="info-box">
+          <div class="ib-icon">📍</div>
+          <div class="ib-label" data-ar="المسافة" data-en="Distance">المسافة</div>
+          <div class="ib-val" id="p-distance"></div>
+        </div>
+        <div class="info-box">
+          <div class="ib-icon">🕒</div>
+          <div class="ib-label" data-ar="الأوقات" data-en="Hours">الأوقات</div>
+          <div class="ib-val" id="p-time"></div>
+        </div>
+        <div class="info-box">
+          <div class="ib-icon">💰</div>
+          <div class="ib-label" data-ar="السعر" data-en="Price">السعر</div>
+          <div class="ib-val" id="p-price"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title"><span class="emoji" aria-hidden="true">🏨</span><span data-ar="فنادق" data-en="Hotels">فنادق</span></div>
+
+    <div class="controls card">
+      <div class="filter-group">
+        <label class="filter-label" data-ar="اختر المدينة:" data-en="Choose City:">اختر المدينة:</label>
+        <select id="city-select" class="city-select" onchange="changeCity(this.value)">
+          <option value="dubai">🏙️ <span data-ar="دبي" data-en="Dubai">دبي</span></option>
+          <option value="abudhabi">🏛️ <span data-ar="أبوظبي" data-en="Abu Dhabi">أبوظبي</span></option>
+          <option value="sharjah">🏘️ <span data-ar="الشارقة" data-en="Sharjah">الشارقة</span></option>
+          <option value="ajman">🌊 <span data-ar="عجمان" data-en="Ajman">عجمان</span></option>
+          <option value="rak">⛰️ <span data-ar="رأس الخيمة" data-en="Ras Al Khaimah">رأس الخيمة</span></option>
+          <option value="fujairah">🏖️ <span data-ar="الفجيرة" data-en="Fujairah">الفجيرة</span></option>
+          <option value="uaq">🦅 <span data-ar="أم القيوين" data-en="Umm Al Quwain">أم القيوين</span></option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label" data-ar="رتّب حسب:" data-en="Sort by:">رتّب حسب:</label>
+        <div class="sort-buttons">
+          <button class="sort-btn active" onclick="sortPlaces('nearest')" data-ar="📍 الأقرب" data-en="📍 Nearest">📍 الأقرب</button>
+          <button class="sort-btn" onclick="sortPlaces('rating')" data-ar="⭐ الأعلى" data-en="⭐ Highest">⭐ الأعلى</button>
+          <button class="sort-btn" onclick="sortPlaces('price')" data-ar="💰 الأرخص" data-en="💰 Cheapest">💰 الأرخص</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="list" id="places-list"></section>
+
+    <div class="bottom-search">
+      <div class="search">
+        <div class="glass">🔍</div>
+        <input type="search" id="search-input" 
+               placeholder="ابحث عن فنادق..." 
+               data-ar-placeholder="ابحث عن فنادق..." 
+               data-en-placeholder="Search for hotels..." 
+               aria-label="ابحث في الفنادق" />
+      </div>
+      <div id="autocomplete-list" class="autocomplete-list"></div>
+    </div>
+  </main>
+  <footer data-ar="© عبدالله بن ناصر - حياك" data-en="© Abdullah bin Nasser - Hayyak">© عبدالله بن ناصر - حياك</footer>
+
+  <script>
+    // Language state
+    let currentLanguage = 'ar';
+    let currentCity = 'dubai';
+    let currentSort = 'nearest';
+    let filteredPlaces = [];
+    let userLocation = {lat: 25.2048, lon: 55.2708}; // Dubai default
+
+    // Translation function
+    function toggleLanguage() {
+      const btn = document.getElementById('translateBtn');
+      btn.classList.add('switching');
+      
+      // Switch language
+      currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+      
+      // Update button text
+      const langText = btn.querySelector('span:last-child');
+      langText.textContent = currentLanguage === 'ar' ? 'English' : 'العربية';
+      
+      // Update page direction
+      document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = currentLanguage;
+      
+      // Update page title
+      document.title = currentLanguage === 'ar' ? 'حياك | فنادق' : 'Hayyak | Hotels';
+      
+      // Save language preference
+      const profile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      profile.language = currentLanguage;
+      localStorage.setItem('hayyak_user_profile', JSON.stringify(profile));
+      
+      // Translate all content
+      translateAllContent();
+      
+      // Re-filter and render places with new language
+      filterAndSort();
+      
+      // Show notification
+      showError(currentLanguage === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English');
+      
+      // Remove animation class
+      setTimeout(() => {
+        btn.classList.remove('switching');
+      }, 500);
+    }
+    
+    // Translate all content including header and footer
+    function translateAllContent() {
+      // Translate elements with data attributes in the entire document
+      document.querySelectorAll('[data-ar], [data-en]').forEach(element => {
+        if (element.hasAttribute('data-ar') && element.hasAttribute('data-en')) {
+          element.textContent = currentLanguage === 'ar' ? element.getAttribute('data-ar') : element.getAttribute('data-en');
+        }
+      });
+      
+      // Translate placeholders
+      document.querySelectorAll('[data-ar-placeholder], [data-en-placeholder]').forEach(element => {
+        if (element.hasAttribute('data-ar-placeholder') && element.hasAttribute('data-en-placeholder')) {
+          element.placeholder = currentLanguage === 'ar' ? element.getAttribute('data-ar-placeholder') : element.getAttribute('data-en-placeholder');
+        }
+      });
+      
+      // Update aria-label for home button
+      const homeBtn = document.querySelector('.home-btn');
+      if (homeBtn) {
+        homeBtn.setAttribute('aria-label', currentLanguage === 'ar' ? 'الرئيسية' : 'Home');
+      }
+      
+      // Update aria-label for translate button
+      const translateBtn = document.getElementById('translateBtn');
+      if (translateBtn) {
+        translateBtn.setAttribute('aria-label', currentLanguage === 'ar' ? 'تبديل اللغة' : 'Toggle Language');
+      }
+      
+      // Update aria-label for search input
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.setAttribute('aria-label', currentLanguage === 'ar' ? 'ابحث في الفنادق' : 'Search for hotels');
+      }
+      
+      // Update aria-label for map
+      const map = document.querySelector('.map');
+      if (map) {
+        map.setAttribute('aria-label', currentLanguage === 'ar' ? 'خريطة' : 'Map');
+      }
+      
+      // Translate city options in select
+      const citySelect = document.getElementById('city-select');
+      if (citySelect) {
+        Array.from(citySelect.options).forEach(option => {
+          const span = option.querySelector('span');
+          if (span && span.hasAttribute('data-ar') && span.hasAttribute('data-en')) {
+            span.textContent = currentLanguage === 'ar' ? span.getAttribute('data-ar') : span.getAttribute('data-en');
+          }
+        });
+      }
+    }
+
+    // 7-City Hotel Database with premium hotels per city
+    const allPlaces = {
+      dubai: [
+        {city:'dubai', name:'Burj Al Arab Jumeirah', nameAr:'برج العرب جميرا', lat:25.1412, lon:55.1853, rating:4.8, price:'1500', time:'Open 24/7', desc:'7-star luxury hotel shaped like a sail', descAr:'فندق فاخر 7 نجوم مميز على شكل帆'},
+        {city:'dubai', name:'Emirates Palace Dubai', nameAr:'قصر الإمارات دبي', lat:25.1972, lon:55.2744, rating:4.7, price:'1200', time:'Open 24/7', desc:'Luxury hotel with imperial design', descAr:'فندق فاخر بتصميم إمبراطوري'},
+        {city:'dubai', name:'Atlantis The Palm', nameAr:'أتلانتس النخلة', lat:25.1304, lon:55.1171, rating:4.6, price:'900', time:'Open 24/7', desc:'Luxury resort on the Palm with water park', descAr:'منتجع فاخر على النخلة بحديقة مائية'},
+        {city:'dubai', name:'Jumeirah Beach Hotel', nameAr:'فندق جميرا بيتش', lat:25.1408, lon:55.1883, rating:4.7, price:'850', time:'Open 24/7', desc:'Luxury hotel with private beach', descAr:'فندق فاخر بشاطئ خاص'},
+        {city:'dubai', name:'Madinat Jumeirah', nameAr:'مدينة جميرا', lat:25.1332, lon:55.1833, rating:4.5, price:'750', time:'Open 24/7', desc:'Resort inspired by Arabian architecture', descAr:'منتجع مستوحى من العمارة العربية'},
+        {city:'dubai', name:'Sofitel Dubai The Palm', nameAr:'سوفيتيل دبي النخلة', lat:25.1260, lon:55.1178, rating:4.6, price:'650', time:'Open 24/7', desc:'Luxury hotel on Palm Jumeirah', descAr:'فندق فاخر على نخلة جميرا'},
+        {city:'dubai', name:'Park Hyatt Dubai', nameAr:'بارك حياة دبي', lat:25.1919, lon:55.3219, rating:4.6, price:'700', time:'Open 24/7', desc:'Hotel on the Creek with private gardens', descAr:'فندق على الخليج بحدائق خاصة'},
+        {city:'dubai', name:'Dubai Hilton Creek Hotel', nameAr:'هيلتون دبي كريك', lat:25.2600, lon:55.3000, rating:4.5, price:'550', time:'Open 24/7', desc:'5-star hotel on Dubai Creek', descAr:'فندق 5 نجوم على خور دبي'},
+        {city:'dubai', name:'Taj Mahal Dubai', nameAr:'تاج محل دبي', lat:25.2354, lon:55.3003, rating:4.4, price:'450', time:'Open 24/7', desc:'Luxury hotel with Indian design', descAr:'فندق بتصميم هندي فاخر'},
+        {city:'dubai', name:'Marina Hotel Dubai', nameAr:'فندق مارينا دبي', lat:25.0805, lon:55.1403, rating:4.5, price:'500', time:'Open 24/7', desc:'Hotel with views of Dubai Marina', descAr:'فندق بإطلالة على دبي مارينا'}
+      ],
+      abudhabi: [
+        {city: 'abudhabi', name: 'Emirates Palace Abu Dhabi', nameAr: 'قصر الإمارات أبوظبي', lat: 24.4833, lon: 54.6050, rating: 4.9, price: '1800', time: 'Open 24/7', desc: 'Very luxurious hotel with imperial design', descAr: 'فندق فاخر جداً بتصميم إمبراطوري'},
+        {city: 'abudhabi', name: 'St. Regis Saadiyat Island Resort', nameAr: 'منتجع سانت ريجيس جزيرة السعديات', lat: 24.5030, lon: 54.6100, rating: 4.8, price: '1400', time: 'Open 24/7', desc: 'Luxury resort on Saadiyat Island', descAr: 'منتجع فاخر على جزيرة السعديات'},
+        {city: 'abudhabi', name: 'Rosewood Abu Dhabi', nameAr: 'روز وود أبوظبي', lat: 24.4930, lon: 54.6064, rating: 4.7, price: '1200', time: 'Open 24/7', desc: 'Luxury hotel with panoramic views', descAr: 'فندق فاخر بإطلالات بانورامية'},
+        {city: 'abudhabi', name: 'Sonesta Collection Abu Dhabi Al Bahr', nameAr: 'سونيستا كولكشن أبوظبي البحر', lat: 24.4882, lon: 54.5963, rating: 4.6, price: '900', time: 'Open 24/7', desc: 'Modern hotel with distinctive architectural design', descAr: 'فندق حديث بتصميم معماري مميز'},
+        {city: 'abudhabi', name: 'The Ritz-Carlton Abu Dhabi', nameAr: 'ريتز كارلتون أبوظبي', lat: 24.5100, lon: 54.6200, rating: 4.8, price: '1300', time: 'Open 24/7', desc: 'Luxury hotel with private beaches', descAr: 'فندق فاخر بشواطئ خاصة'}
+      ],
+      sharjah: [
+        {city:'sharjah', name:'Sharjah Rotana Hotel', nameAr:'فندق الشارقة روتانا', lat:25.3222, lon:55.3761, rating:4.5, price:'550', time:'Open 24/7', desc:'5-star hotel with sea views', descAr:'فندق 5 نجوم بإطلالات بحرية'},
+        {city:'sharjah', name:'Al Diar Lewa Hotel', nameAr:'فندق الديار لواء', lat:25.3350, lon:55.3869, rating:4.4, price:'480', time:'Open 24/7', desc:'Luxury hotel on Al Qasba', descAr:'فندق فاخر على القصباء'},
+        {city:'sharjah', name:'Coral Beach Resort Sharjah', nameAr:'منتجع كورال بيتش الشارقة', lat:25.3275, lon:55.3625, rating:4.6, price:'650', time:'Open 24/7', desc:'Luxury beach resort', descAr:'منتجع شاطئي فاخر'},
+        {city:'sharjah', name:'Ramada by Wyndham Downtown Sharjah', nameAr:'رامادا ويندام وسط الشارقة', lat:25.3500, lon:55.3680, rating:4.3, price:'420', time:'Open 24/7', desc:'4-star hotel in city center', descAr:'فندق 4 نجوم في وسط المدينة'},
+        {city:'sharjah', name:'Hilton Sharjah', nameAr:'هيلتون الشارقة', lat:25.3470, lon:55.3690, rating:4.5, price:'520', time:'Open 24/7', desc:'5-star hotel with high-level services', descAr:'فندق 5 نجوم بخدمات عالية'}
+      ],
+      ajman: [
+        {city: 'ajman', name: 'Ajman Palace Hotel', nameAr: 'فندق قصر عجمان', lat: 25.4167, lon: 55.4333, rating: 4.4, price: '450', time: 'Open 24/7', desc: '4-star hotel on the beach', descAr: 'فندق 4 نجوم على الشاطئ'},
+        {city: 'ajman', name: 'Kempinski Hotel Ajman', nameAr: 'فندق كيمبينسكي عجمان', lat: 25.4190, lon: 55.4340, rating: 4.6, price: '750', time: 'Open 24/7', desc: 'Luxury family hotel', descAr: 'فندق فاخر للعائلات'},
+        {city: 'ajman', name: 'Coral Beach Resort Ajman', nameAr: 'منتجع كورال بيتش عجمان', lat: 25.3994, lon: 55.4797, rating: 4.5, price: '600', time: 'Open 24/7', desc: 'Distinctive beach resort', descAr: 'منتجع شاطئي مميز'},
+        {city: 'ajman', name: 'Ajman Saray Hotel', nameAr: 'فندق عجمان سراي', lat: 25.4100, lon: 55.4400, rating: 4.3, price: '400', time: 'Open 24/7', desc: 'Simple 3-star hotel', descAr: 'فندق 3 نجوم بسيط'},
+        {city: 'ajman', name: 'Best Western Ajman', nameAr: 'بيست ويسترن عجمان', lat: 25.4120, lon: 55.4420, rating: 4.2, price: '350', time: 'Open 24/7', desc: 'Economical hotel for travelers', descAr: 'فندق اقتصادي للرحالة'}
+      ],
+      rak: [
+        {city: 'rak', name: 'Hilton Ras Al Khaimah Resort & Spa', nameAr: 'منتجع وهيلتون رأس الخيمة آند سبا', lat: 25.9533, lon: 56.1603, rating: 4.6, price: '700', time: 'Open 24/7', desc: 'Mountain luxury resort with spa', descAr: 'منتجع جبلي فاخر بمنتجع صحي'},
+        {city: 'rak', name: 'Banyan Tree Al Wadi', nameAr: 'بانيان تري الوادي', lat: 25.9467, lon: 56.1358, rating: 4.7, price: '1100', time: 'Open 24/7', desc: 'Very luxurious resort in the valley', descAr: 'منتجع فاخر جداً في الوادي'},
+        {city: 'rak', name: 'Waldorf Astoria Ras Al Khaimah', nameAr: 'والدورف أستوريا رأس الخيمة', lat: 25.6961, lon: 55.7864, rating: 4.8, price: '1300', time: 'Open 24/7', desc: 'Luxury hotel with global standards', descAr: 'فندق فاخر بمعايير عالمية'},
+        {city: 'rak', name: 'Marriott Beach Resort Ras Al Khaimah', nameAr: 'منتجع ماريت بيتش رأس الخيمة', lat: 25.6167, lon: 56.0000, rating: 4.5, price: '650', time: 'Open 24/7', desc: 'Family beach resort', descAr: 'منتجع شاطئي عائلي'},
+        {city: 'rak', name: 'Ras Al Khaimah Hotel', nameAr: 'فندق رأس الخيمة', lat: 25.6500, lon: 56.0500, rating: 4.2, price: '380', time: 'Open 24/7', desc: 'Simple and elegant hotel', descAr: 'فندق بسيط وفاخر'}
+      ],
+      fujairah: [
+        {city: 'fujairah', name: 'Le Méridien Al Aqah Beach Resort', nameAr: 'منتجع لوميريديان العقبة بيتش', lat: 25.1167, lon: 56.3500, rating: 4.7, price: '850', time: 'Open 24/7', desc: 'Luxury beach resort with diving', descAr: 'منتجع شاطئ فاخر مع غوص'},
+        {city: 'fujairah', name: 'Sandy Beach Hotel', nameAr: 'فندق ساندي بيتش', lat: 25.4933, lon: 56.3636, rating: 4.5, price: '650', time: 'Open 24/7', desc: 'Distinctive beach hotel', descAr: 'فندق شاطئي مميز'},
+        {city: 'fujairah', name: 'Fujairah Beach Hotel', nameAr: 'فندق الفجيرة بيتش', lat: 25.1167, lon: 56.3500, rating: 4.4, price: '520', time: 'Open 24/7', desc: 'Simple beach hotel', descAr: 'فندق شاطئي بسيط'},
+        {city: 'fujairah', name: 'Dusit Thani Fujairah', nameAr: 'دوسيت ثاني الفجيرة', lat: 25.1400, lon: 56.3350, rating: 4.6, price: '750', time: 'Open 24/7', desc: 'Thai-style luxury hotel', descAr: 'فندق تايلاندي الأسلوب فاخر'},
+        {city: 'fujairah', name: 'Fujairah Rotana Resort & Spa', nameAr: 'منتجع الفجيرة روتانا آند سبا', lat: 25.4500, lon: 56.3600, rating: 4.5, price: '680', time: 'Open 24/7', desc: 'Luxury resort with spa', descAr: 'منتجع فاخر مع منتجع صحي'}
+      ],
+      uaq: [
+        {city: 'uaq', name: 'Umm Al Quwain Beach Hotel', nameAr: 'فندق أم القيوين بيتش', lat: 25.5947, lon: 55.6633, rating: 4.4, price: '480', time: 'Open 24/7', desc: 'Beach hotel for families', descAr: 'فندق شاطئي للعائلات'},
+        {city: 'uaq', name: 'Al Marjan Island Resort', nameAr: 'منتجع جزيرة المرجان', lat: 25.5167, lon: 55.5833, rating: 4.5, price: '620', time: 'Open 24/7', desc: 'Luxury resort on the island', descAr: 'منتجع على جزيرة فاخر'},
+        {city: 'uaq', name: 'Umm Al Quwain Rotana', nameAr: 'أم القيوين روتانا', lat: 25.5933, lon: 55.5633, rating: 4.3, price: '420', time: 'Open 24/7', desc: 'Simple 4-star hotel', descAr: 'فندق 4 نجوم بسيط'},
+        {city: 'uaq', name: 'Siniyah Island Resort', nameAr: 'منتجع جزيرة السينية', lat: 25.6167, lon: 55.6000, rating: 4.6, price: '750', time: 'Open 24/7', desc: 'Resort on a protected island', descAr: 'منتجع على جزيرة محمية'},
+        {city: 'uaq', name: 'Coral Beach Resort UAQ', nameAr: 'منتجع كورال بيتش أم القيوين', lat: 25.5950, lon: 55.6640, rating: 4.4, price: '550', time: 'Open 24/7', desc: 'Small beach resort', descAr: 'منتجع شاطئ صغير'}
+      ],
+    };
+
+    function getUserLocation() {
+      const userProfile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      if (userProfile.latitude && userProfile.longitude) {
+        userLocation = {lat: parseFloat(userProfile.latitude), lon: parseFloat(userProfile.longitude)};
+      }
+
+      if (userProfile.emirate) {
+        const map = {
+          'Abu Dhabi': 'abudhabi', 'Dubai': 'dubai', 'Sharjah': 'sharjah',
+          'Ajman': 'ajman', 'Ras Al Khaimah': 'rak', 'Fujairah': 'fujairah',
+          'Umm Al Quwain': 'uaq'
+        };
+        if (map[userProfile.emirate]) {
+          currentCity = map[userProfile.emirate];
+          const select = document.getElementById('city-select');
+          if (select) select.value = currentCity;
+        }
+      }
+    }
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return (R * c).toFixed(1);
+    }
+
+    function filterAndSort() {
+      let places = allPlaces[currentCity] || [];
+      filteredPlaces = places.map(p => ({
+        ...p,
+        distance: calculateDistance(userLocation.lat, userLocation.lon, p.lat, p.lon)
+      }));
+
+      if (currentSort === 'nearest') filteredPlaces.sort((a,b) => parseFloat(a.distance) - parseFloat(b.distance));
+      else if (currentSort === 'rating') filteredPlaces.sort((a,b) => b.rating - a.rating);
+      else if (currentSort === 'price') filteredPlaces.sort((a,b) => {
+        const pa = a.price === 'متفاوت' || a.price === '0' ? 999 : parseInt(a.price);
+        const pb = b.price === 'متفاوت' || b.price === '0' ? 999 : parseInt(b.price);
+        return pa - pb;
+      });
+
+      renderPlaces(filteredPlaces.slice(0, 4));
+    }
+
+    function renderPlaces(places) {
+      const list = document.getElementById('places-list');
+      list.innerHTML = '';
+      places.forEach(p => {
+        const item = document.createElement('article');
+        item.className = 'item';
+        item.onclick = () => showPlace(p);
+        
+        const name = currentLanguage === 'ar' ? (p.nameAr || p.name) : p.name;
+        const distanceText = currentLanguage === 'ar' ? `${p.distance} كم` : `${p.distance} km`;
+        const ratingText = `⭐ ${p.rating}`;
+        
+        item.innerHTML = `
+          <div class="pin">🏨</div>
+          <img class="thumb" src="https://placehold.co/80x48?text=${encodeURIComponent(name.substring(0, 10))}" alt="${name}">
+          <div class="label">
+            <span>${name}</span>
+            <span class="distance-badge">${distanceText}</span>
+            <span class="rating-badge">${ratingText}</span>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function sortPlaces(type) {
+      currentSort = type;
+      document.querySelectorAll('.sort-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+      filterAndSort();
+    }
+
+    function changeCity(city) {
+      currentCity = city;
+      filterAndSort();
+    }
+
+    function showPlace(p) {
+      const panel = document.getElementById('info-panel');
+      
+      // Toggle: if same place is clicked twice, hide the panel
+      if (panel.dataset.currentPlace === p.name && panel.classList.contains('active')) {
+        panel.classList.remove('active');
+        panel.dataset.currentPlace = '';
+        return;
+      }
+      
+      panel.dataset.currentPlace = p.name;
+      const bbox = `${p.lon-0.008},${p.lat-0.008},${p.lon+0.008},${p.lat+0.008}`;
+      document.querySelector('.map iframe').src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik`;
+      
+      const name = currentLanguage === 'ar' ? (p.nameAr || p.name) : p.name;
+      const desc = currentLanguage === 'ar' ? p.descAr : p.desc;
+      const price = p.price === '0' ? (currentLanguage === 'ar' ? 'مجاني' : 'Free') : p.price + (currentLanguage === 'ar' ? ' درهم' : ' AED');
+      const time = p.time;
+      const distanceText = currentLanguage === 'ar' ? `${p.distance} كم` : `${p.distance} km`;
+      const ratingText = `${p.rating}/5`;
+      
+      document.getElementById('p-title').innerText = name;
+      document.getElementById('p-rating').innerText = ratingText;
+      document.getElementById('p-distance').innerText = distanceText;
+      document.getElementById('p-time').innerText = time;
+      document.getElementById('p-price').innerText = price;
+      document.getElementById('p-desc').innerText = desc;
+      panel.classList.add('active');
+
+      const item = { title: name, lat: p.lat, lon: p.lon, date: new Date().toISOString() };
+      let history = JSON.parse(localStorage.getItem('hayyak_history') || '[]');
+      history = history.filter(i => i.title !== name);
+      history.unshift(item);
+      if (history.length > 20) history.pop();
+      localStorage.setItem('hayyak_history', JSON.stringify(history));
+    }
+
+    let toastTimeout;
+    function showError(message) {
+      const toast = document.getElementById('error-toast');
+      if (!toast) {
+        const newToast = document.createElement('div');
+        newToast.id = 'error-toast';
+        newToast.className = 'error-toast';
+        document.body.appendChild(newToast);
+      }
+      const toast2 = document.getElementById('error-toast');
+      toast2.innerText = message;
+      toast2.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast2.classList.remove('show');
+      }, 3500);
+    }
+
+    const searchInput = document.getElementById('search-input');
+    const autocompleteList = document.getElementById('autocomplete-list');
+    
+    searchInput.addEventListener('input', function (e) {
+      const query = this.value.trim();
+      if (query.length >= 2) {
+        showAutocomplete(query);
+      } else {
+        autocompleteList.classList.remove('active');
+      }
+    });
+
+    searchInput.addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') {
+        const query = this.value.trim();
+        if (query.length >= 2) {
+          performSearch(query);
+          autocompleteList.classList.remove('active');
+        }
+      }
+    });
+
+    function showAutocomplete(query) {
+      const queryLower = query.toLowerCase().trim();
+      const results = Object.values(allPlaces).flat().filter(p => {
+        const name = currentLanguage === 'ar' ? (p.nameAr || p.name) : p.name;
+        const desc = currentLanguage === 'ar' ? p.descAr : p.desc;
+        return name.toLowerCase().includes(queryLower) || desc.toLowerCase().includes(queryLower);
+      }).slice(0, 5);
+
+      if (results.length === 0) {
+        autocompleteList.classList.remove('active');
+        return;
+      }
+
+      autocompleteList.innerHTML = results.map(place => {
+        const name = currentLanguage === 'ar' ? (place.nameAr || place.name) : place.name;
+        const desc = currentLanguage === 'ar' ? place.descAr : place.desc;
+        return `
+          <div class="autocomplete-item" onclick="selectPlace('${place.city}', '${place.name}')">
+            <div class="autocomplete-item-name">${name}</div>
+            <div class="autocomplete-item-desc">${desc.substring(0, 50)}...</div>
+          </div>
+        `;
+      }).join('');
+      
+      autocompleteList.classList.add('active');
+    }
+
+    function selectPlace(city, placeName) {
+      const place = allPlaces[city].find(p => p.name === placeName);
+      if (!place) return;
+      
+      const name = currentLanguage === 'ar' ? (place.nameAr || place.name) : place.name;
+      searchInput.value = name;
+      autocompleteList.classList.remove('active');
+      currentCity = city;
+      document.getElementById('city-select').value = city;
+      filterAndSort();
+      const distance = calculateDistance(userLocation.lat, userLocation.lon, place.lat, place.lon);
+      showPlace({...place, distance});
+    }
+
+    function performSearch(query) {
+      if (!query || query.trim().length < 2) {
+        return;
+      }
+
+      const queryLower = query.toLowerCase().trim();
+      const found = Object.values(allPlaces).flat().find(p => {
+        const name = currentLanguage === 'ar' ? (p.nameAr || p.name) : p.name;
+        const desc = currentLanguage === 'ar' ? p.descAr : p.desc;
+        return name.toLowerCase().includes(queryLower) || desc.toLowerCase().includes(queryLower);
+      });
+
+      if (found) {
+        currentCity = found.city;
+        document.getElementById('city-select').value = currentCity;
+        filterAndSort();
+        const distance = calculateDistance(userLocation.lat, userLocation.lon, found.lat, found.lon);
+        showPlace({...found, distance});
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      // Add click event to translate button
+      document.getElementById('translateBtn').addEventListener('click', toggleLanguage);
+      
+      const userProfile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      if (userProfile.language && userProfile.language !== currentLanguage) {
+        currentLanguage = userProfile.language;
+        document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = currentLanguage;
+        const btn = document.getElementById('translateBtn');
+        if (btn) {
+          const langText = btn.querySelector('span:last-child');
+          if (langText) langText.textContent = currentLanguage === 'ar' ? 'English' : 'العربية';
+        }
+        translateAllContent();
+      }
+      
+      // Apply Theme
+      if (userProfile.theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+      
+      getUserLocation();
+      filterAndSort();
+    });
+  
+</script>
+  <script>
+    // Location sorting helper for geolocation-based display
+    function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+      var R = 6371; 
+      var dLat = deg2rad(lat2-lat1); 
+      var dLon = deg2rad(lon2-lon1); 
+      var a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2); 
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+      var d = R * c; 
+      return d;
+    }
+
+    function deg2rad(deg) { return deg * (Math.PI/180); }
+
+    function sortListByLocation(userLat, userLon) {
+        const list = document.querySelector('.list');
+        if(!list) return;
+        const items = Array.from(list.querySelectorAll('.item'));
+        items.forEach(item => {
+            const onclick = item.getAttribute('onclick');
+            const match = onclick.match(/showPlace\s*\(\s*([\d\.]+)\s*,\s*([\d\.]+)/);
+            if (match) item.dataset.distance = getDistanceFromLatLonInKm(userLat, userLon, parseFloat(match[1]), parseFloat(match[2]));
+            else item.dataset.distance = 99999;
+        });
+        items.sort((a, b) => parseFloat(a.dataset.distance) - parseFloat(b.dataset.distance));
+        items.forEach(item => list.appendChild(item));
+    }
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(p => sortListByLocation(p.coords.latitude, p.coords.longitude));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>حياك | HAYYAK</title>
+  <meta name="description" content="اهلين، وين حاب تروح اليوم؟ اكتشف المتاجر، المطاعم، السياحة، الشواطئ، والفنادق مع أفضل العروض اليومية." />
+  <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+  
+  <!-- Google Fonts: Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    // Check for user profile - Run immediately
+    if (!localStorage.getItem('hayyak_user_profile')) {
+      window.location.href = 'index.html';
+    }
+  </script>
+
+  <!-- Afeesh local fonts (single family name, multiple weights) -->
+  <style>
+    /* Map several available Afeesh font files to one family name for easy usage */
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Aadi.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Aadi.woff') format('woff'),
+           url('./afeesh/Afeesh-Aadi.ttf') format('truetype');
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Mekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Mekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-Mekalbaz.ttf') format('truetype');
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-NosMekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-NosMekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-NosMekalbaz.ttf') format('truetype');
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('afeesh/Afeesh-NosMesalwa.woff2') format('woff2'),
+           url('afeesh/Afeesh-NosMesalwa.woff') format('woff'),
+           url('afeesh/Afeesh-NosMesalwa.ttf') format('truetype');
+      font-weight: 300;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    :root {
+      --bg: #f5f5f7;
+      --card: #ffffff;
+      --ink: #0f0f10;
+      --muted: #6b7280;
+      --line: #0f0f10;
+      --accent: #d4af37;
+      --radius: 14px;
+    }
+    [data-theme="dark"] {
+      --bg: #121212; --card: #1e1e1e; --ink: #ffffff; --muted: #a0a0a0; --line: #333333;
+    }
+    [data-theme="dark"] .close-btn {
+        background: #333; color: #fff;
+    }
+    [data-theme="dark"] .close-btn:hover { background: #444; }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      background: var(--bg);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Cairo', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .page {
+      min-height: 100%;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    /* Phone-width centered container to resemble the mockup, but responsive */
+    .shell {
+      width: 100%;
+      max-width: 420px; /* close to the phone width in the screenshot */
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 2px 0 #0f0f10;
+    }
+
+    header.brand {
+      text-align: center;
+      margin: 0;
+      background: #16243d;
+      color: #ffffff;
+      padding: 20px;
+      position: relative;
+    }
+    .logo-text {
+      font-family: 'Afeesh', sans-serif;
+      font-weight: 700;
+      font-size: 48px;
+      letter-spacing: 2px;
+       color: #d4af37;
+    }
+    .logo-sub {
+      font-family: 'Afeesh', sans-serif;
+      font-weight: 600;
+      color: #94a3b8;
+      font-size: 20px;
+      margin-top: 2px;
+      letter-spacing: 3px;
+    }
+    
+    /* Translate Button Styles */
+    .translate-btn {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      background: #d4af37;
+      border: 2px solid #ffffff;
+      border-radius: 20px;
+      color: #16243d;
+      padding: 6px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+      z-index: 100;
+    }
+    
+    .translate-btn:hover {
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.5);
+      background: #f7ef8a;
+    }
+    
+    .translate-btn .icon {
+      font-size: 16px;
+      transition: transform 0.3s ease;
+    }
+    
+    .translate-btn:hover .icon {
+      transform: rotate(20deg);
+    }
+    
+    .translate-btn.switching {
+      animation: pulse 0.5s ease;
+    }
+    
+    @keyframes pulse {
+      0% { transform: translateY(-50%) scale(1); }
+      50% { transform: translateY(-50%) scale(0.9); }
+      100% { transform: translateY(-50%) scale(1); }
+    }
+
+    /* Map placeholder to mimic the image in the phone */
+    .map {
+      height: 180px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      border: 2px solid var(--line);
+    }
+    .map iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    h1, h2, h3 { margin: 0; }
+
+    .question {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 14px 6px 8px;
+    }
+
+    /* Categories row - UPDATED */
+    .cats {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 8px 4px 2px;
+    }
+    .cat {
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      gap: 6px;
+      font-size: 12px;
+      text-align: center;
+      user-select: none;
+      text-decoration: none;
+      color: var(--ink);
+      cursor: pointer;
+      width: 64px; /* Fixed width for all categories */
+    }
+    .cat .ico {
+      width: 52px; 
+      height: 46px;
+      display: grid; 
+      place-items: center;
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      background: var(--card);
+    }
+    .cat .emoji { 
+      font-size: 22px; 
+      line-height: 1; 
+    }
+
+    /* New: Center the farms and health categories specifically */
+    .cat-farms-health {
+      order: 0; /* Keep them in normal flow */
+    }
+
+    .section-title {
+      font-weight: 700;
+      font-size: 22px;
+      margin: 6px 6px 10px;
+    }
+
+    /* Offer card */
+    .offer { padding: 0 6px 8px; }
+    .offer .deal {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      gap: 10px;
+      align-items: center;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 6px 8px 6px 12px;
+      background: var(--card);
+    }
+    .offer .deal img {
+      width: 64px; height: 40px; object-fit: cover; border-radius: 8px;
+      border: 2px solid var(--line);
+    }
+    .offer .deal .title { font-weight: 700; }
+    .offer .deal .sub { color: var(--muted); font-weight: 600; font-size: 13px; }
+
+    /* List of quick links */
+    .quick { padding: 6px; display: grid; gap: 8px; }
+    .quick .item {
+      display: flex; align-items: center; gap: 10px;
+      border: 2px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      background: var(--card);
+      font-weight: 600;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .quick .item .label { flex: 1 1 auto; }
+
+    /* History Panel */
+    .history-panel {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--card); border-top-left-radius: 20px; border-top-right-radius: 20px;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+      padding: 20px; z-index: 1000;
+      transform: translateY(100%); transition: transform 0.3s ease;
+      max-height: 70vh; display: flex; flex-direction: column;
+    }
+    .history-panel.active { transform: translateY(0); }
+    .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .history-list { overflow-y: auto; display: grid; gap: 10px; }
+    .history-item { padding: 12px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
+    .history-item:hover { background: var(--bg); }
+    
+    .close-btn { 
+        background: #f0f0f0; border: none; font-size: 20px; cursor: pointer; color: #666; 
+        width: 32px; height: 32px; border-radius: 50%; display: flex; 
+        align-items: center; justify-content: center; transition: all 0.2s; 
+    }
+    .close-btn:hover { background: #e0e0e0; color: #000; }
+
+    /* Bottom search */
+    .bottom-search { padding: 10px 6px 18px; }
+    .search {
+      display: grid; grid-template-columns: 28px 1fr; align-items: center; gap: 8px;
+      border: 2px solid var(--line); border-radius: 999px; padding: 10px 12px;
+      background: var(--card);
+    }
+    .search .glass { text-align: center; font-size: 16px; }
+    .search input {
+      appearance: none; border: 0; outline: 0; background: transparent; width: 100%;
+      font: inherit; color: var(--ink);
+    }
+    .search input::placeholder { color: var(--muted); }
+
+   
+    footer {
+      background: #16243d;
+      color: #ffffff;
+      text-align: center;
+      font-size: 14px;
+      padding: 20px;
+    }
+    
+    /* Question Modal Styles */
+    .question-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .question-modal.active {
+      display: flex;
+    }
+
+    .question-content {
+      background: var(--card);
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      border: 2px solid var(--line);
+      color: var(--ink);
+    }
+
+    .question-content h2 {
+      font-size: 18px;
+      color: var(--ink);
+      margin: 0 0 16px;
+      text-align: center;
+    }
+
+    .question-progress {
+      font-size: 12px;
+      color: #94a3b8;
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .question-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .question-option {
+      padding: 12px 14px;
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: right;
+      background: var(--card);
+      color: var(--ink);
+    }
+
+    .question-option:hover {
+      background: var(--bg);
+      border-color: var(--accent);
+    }
+
+    .question-option {
+      display: flex;
+      align-items: center;
+    }
+
+    .question-option label {
+      display: flex;
+      align-items: center;
+      flex: 1;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .question-option input[type="radio"] {
+      cursor: pointer;
+      margin-right: 12px;
+      accent-color: var(--accent);
+    }
+
+    [dir="rtl"] .question-option input[type="radio"] {
+      margin-right: 0;
+      margin-left: 12px;
+    }
+
+    .question-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .question-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .question-btn-submit {
+      background: #16243d;
+      color: #d4af37;
+      box-shadow: 0 4px 0 var(--line);
+    }
+
+    .question-btn-submit:hover {
+      background: #1e2f4d;
+    }
+
+    .question-btn-skip {
+      background: transparent;
+      color: var(--ink);
+      border: 2px solid var(--line);
+    }
+
+    .question-btn-skip:hover {
+      background: var(--bg);
+    }
+    
+    /* Notification styles */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #16243d;
+      color: white;
+      padding: 15px 20px;
+      border-radius: 14px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideIn 0.3s ease;
+      max-width: 320px;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+
+    /* Chat Widget Styles */
+    .chat-widget {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 350px;
+      height: 500px;
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      z-index: 2000;
+      border: 2px solid var(--line);
+      overflow: hidden;
+      animation: slideIn 0.3s ease;
+    }
+    .chat-widget.active { display: flex; }
+    .chat-header {
+      background: var(--primary);
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: bold;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: var(--bg);
+    }
+    .message {
+      max-width: 80%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+    .message.bot {
+      background: var(--card);
+      border: 1px solid var(--line);
+      align-self: flex-start;
+      border-bottom-right-radius: 2px;
+    }
+    .message.user {
+      background: var(--primary);
+      color: var(--accent);
+      align-self: flex-end;
+      border-bottom-left-radius: 2px;
+    }
+    .chat-input-area {
+      padding: 10px;
+      background: var(--card);
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input-area input {
+      flex: 1;
+      padding: 10px;
+      border-radius: 20px;
+      border: 1px solid var(--line);
+      outline: none;
+      font-family: inherit;
+      background: var(--bg);
+      color: var(--ink);
+    }
+    .send-btn {
+      background: var(--primary);
+      color: var(--accent);
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .chat-toggle-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      background: var(--primary);
+      color: var(--accent);
+      border-radius: 50%;
+      border: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      cursor: pointer;
+      z-index: 2000;
+      font-size: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s;
+    }
+    .chat-toggle-btn:hover { transform: scale(1.1); }
+
+    /* Larger screens: breathe a bit more */
+    @media (min-width: 768px) {
+      .shell { padding: 24px; }
+      .map { height: 220px; }
+      .cats {
+        gap: 12px;
+      }
+      .cat {
+        width: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="brand">
+      <div class="logo-text">حــــــيــــاك</div>
+      <div class="logo-sub">HAYYAK</div>
+      <button class="translate-btn" id="translateBtn" aria-label="تبديل اللغة">
+        <span class="icon">🌐</span>
+        <span>English</span>
+      </button>
+    </header>
+    <main class="shell">
+      <div class="map card" aria-label="خريطة" data-ar-label="خريطة" data-en-label="Map">
+        <iframe id="user-map" src="https://www.openstreetmap.org/export/embed.html?bbox=51.50,22.50,56.50,26.20&amp;layer=mapnik" title="Map"></iframe>
+      </div>
+
+      <h1 class="question" data-ar-prefix="" data-en-prefix="" data-ar-suffix="، ماذا تبحث عنه اليوم؟" data-en-suffix=", what are you looking for today?">
+        ماذا تبحث عنه اليوم؟
+      </h1>
+
+      <section class="cats">
+        <a href="stores.html" class="cat">
+          <div class="ico"><span class="emoji" aria-hidden="true">🛍️</span></div>
+          <div class="cat-text" data-ar="متاجر" data-en="Stores">متاجر</div>
+        </a>
+        <a href="restrunt.html" class="cat">
+          <div class="ico"><span class="emoji" aria-hidden="true">🍽️</span></div>
+          <div class="cat-text" data-ar="مطاعم" data-en="Restaurants">مطاعم</div>
+        </a>
+        <a href="toursim.html" class="cat">
+          <div class="ico"><span class="emoji" aria-hidden="true">🗺️</span></div>
+          <div class="cat-text" data-ar="سياحة" data-en="Tourism">سياحة</div>
+        </a>
+        <a href="entertiment.html" class="cat">
+          <div class="ico"><span class="emoji" aria-hidden="true">🏖️</span></div>
+          <div class="cat-text" data-ar="ترفيه" data-en="Entertainment">ترفيه</div>
+        </a>
+        <a href="hotel.html" class="cat">
+          <div class="ico"><span class="emoji" aria-hidden="true">🏨</span></div>
+          <div class="cat-text" data-ar="فنادق" data-en="Hotels">فنادق</div>
+        </a>
+        <a href="farms.html" class="cat cat-farms-health">
+          <div class="ico"><span class="emoji" aria-hidden="true">🌾</span></div>
+          <div class="cat-text" data-ar="مزارع" data-en="Farms">مزارع</div>
+        </a>
+        <a href="health.html" class="cat cat-farms-health">
+          <div class="ico"><span class="emoji" aria-hidden="true">🏥</span></div>
+          <div class="cat-text" data-ar="صحة" data-en="Health">صحة</div>
+        </a>
+      </section>
+
+      <h2 class="section-title" data-ar="عرض اليوم!" data-en="Today's Offer!">عرض اليوم!</h2>
+
+      <section class="offer">
+        <div class="deal">
+          <img src="img.jpg" alt="عرض ترفيهي" data-ar-alt="عرض ترفيهي" data-en-alt="Entertainment offer" />
+          <div>
+            <div class="title" data-ar="خصم 40% على IMG" data-en="40% off on IMG">خصم 40% على IMG</div>
+            <div class="sub" data-ar="لفترة محدودة • اطّلع على التفاصيل" data-en="For a limited time • View details">
+              لفترة محدودة • اطّلع على التفاصيل
+            </div>
+          </div>
+        </div>
+      </section>   
+
+      <section class="quick">
+        <a href="family.html" class="item">
+          <div class="label" data-ar="افراد العائلة والاصدقاء⬅" data-en="Family & Friends⬅">افراد العائلة والاصدقاء⬅</div>
+        </a>
+        <a href="plan_day.html" class="item">
+          <div class="label" data-ar="خطط يومي 📅" data-en="Plan My Day 📅">خطط يومي 📅</div>
+        </a>
+        <a href="profile.html" class="item">
+          <div class="label" data-ar="الملف الشخصي⬅" data-en="Profile⬅">الملف الشخصي⬅</div>
+        </a>
+        <a href="air.html" class="item">
+          <div class="label" data-ar="محطة قياس جودة المكان لاصحاب الحساسية⬅" data-en="Air Quality Station for Allergy Sufferers⬅">
+            محطة قياس جودة المكان لاصحاب الحساسية⬅
+          </div>
+        </a>
+        <a href="javascript:void(0)" onclick="toggleHistory()" class="item">
+          <div class="label" data-ar="اماكن زرتها مسبق⬅" data-en="Previously Visited Places⬅">اماكن زرتها مسبق⬅</div>
+        </a>
+        <a href="hlthPrb.html" class="item">
+          <div class="label" data-ar="المشاكل الصحية/النفسية⬅" data-en="Health/Psychological Issues⬅">المشاكل الصحية/النفسية⬅</div>
+        </a>
+        <a href="ID.HTML" class="item">
+          <div class="label" data-ar="بطاقة التعريف الرقمية⬅" data-en="Digital ID Card⬅">بطاقة التعريف الرقمية⬅</div>
+        </a>
+        <a href="uae_laws.html" class="item">
+          <div class="label" data-ar="قوانين دولة الإمارات العربية المتحدة⬅" data-en="UAE Laws⬅">قوانين دولة الإمارات العربية المتحدة⬅</div>
+        </a>
+      </section>
+
+      <div class="bottom-search">
+        <div class="search">
+          <div class="glass">🔍</div>
+          <input type="search" 
+                 placeholder="ابحث هنا" 
+                 data-ar-placeholder="ابحث هنا" 
+                 data-en-placeholder="Search here" 
+                 aria-label="ابحث هنا" 
+                 id="search-input" />
+        </div>
+      </div>
+    </main>
+
+    <div id="history-panel" class="history-panel" aria-hidden="true">
+      <div class="history-header">
+        <h3 style="font-size:18px; font-weight:700" data-ar="الأماكن التي زرتها مؤخراً" data-en="Recently Visited Places">
+          الأماكن التي زرتها مؤخراً
+        </h3>
+        <button onclick="toggleHistory()" class="close-btn">✕</button>
+      </div>
+      <div id="history-list" class="history-list"></div>
+    </div>
+
+    <footer id="site-footer" data-ar="© عبدالله بن ناصر - حياك" data-en="© Abdullah bin Nasser - Hayyak">
+      © عبدالله بن ناصر - حياك 
+    </footer>
+  </div>
+
+  <!-- Question Modal -->
+  <div id="questionModal" class="question-modal">
+    <div class="question-content">
+      <div class="question-progress" id="questionProgress"></div>
+      <h2 id="questionTitle"></h2>
+      <div class="question-options" id="questionOptions"></div>
+      <div class="question-buttons">
+        <button class="question-btn question-btn-submit" id="submitQuestion" data-ar="تأكيد" data-en="Confirm">تأكيد</button>
+        <button class="question-btn question-btn-skip" id="skipQuestion" data-ar="تخطي" data-en="Skip">تخطي</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Botpress Webchat Scripts -->
+  <!-- <script src="https://cdn.botpress.cloud/webchat/v1/inject.js"></script> -->
+  <!-- TODO: Uncomment the line below and replace [YOUR_BOT_ID] with your actual ID from Botpress Dashboard > Integrations > Webchat -->
+  <!-- <script src="https://mediafiles.botpress.cloud/[YOUR_BOT_ID]/webchat/config.js" defer></script> -->
+
+  <!-- Custom Chat Widget -->
+  <div id="chat-widget" class="chat-widget">
+    <div class="chat-header">
+      <div class="chat-title" data-ar="المساعد الذكي" data-en="AI Assistant">المساعد الذكي</div>
+      <button class="close-chat" onclick="toggleChat()" style="background:none;border:none;color:white;font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="message bot" data-ar="مرحباً! كيف يمكنني مساعدتك اليوم؟" data-en="Hello! How can I help you today?">مرحباً! كيف يمكنني مساعدتك اليوم؟</div>
+    </div>
+    <div class="chat-input-area">
+      <input type="text" id="chat-input" placeholder="..." onkeypress="handleChatKeyPress(event)">
+      <button class="send-btn" onclick="sendChatMessage()">➤</button>
+    </div>
+  </div>
+  
+  <button class="chat-toggle-btn" onclick="toggleChat()">💬</button>
+
+  <script>
+    // ==================== QUESTION SYSTEM ====================
+    const questionsList = [
+      {
+        ar: "ماذا تشتهي أن تأكل اليوم؟",
+        en: "What do you crave today?",
+        answers: [
+          { ar: "مطعم إيطالي", en: "Italian Restaurant", page: "restrunt.html?search=Italian", pageDisplay: "Italian Restaurants" },
+          { ar: "مأكولات بحرية", en: "Seafood", page: "restrunt.html?search=Seafood", pageDisplay: "Seafood Restaurants" },
+          { ar: "برجر", en: "Burger", page: "restrunt.html?search=Burger", pageDisplay: "Burger Joints" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "جوعني", en: "I'm hungry", page: "restrunt.html", pageDisplay: "Restaurant Page" },
+          { ar: "أماكن مرح", en: "Fun places", page: "entertiment.html", pageDisplay: "Entertainment Page" },
+          { ar: "أريد ان تسوق", en: "Want to shop", page: "stores.html", pageDisplay: "Stores Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "سياحة وسفر", en: "Tourism travel", page: "toursim.html", pageDisplay: "Tourism Page" },
+          { ar: "فندق للإقامة", en: "Hotel stay", page: "hotel.html", pageDisplay: "Hotel Page" },
+          { ar: "اماكن اخرى", en: "Other places", page: "home.html", pageDisplay: "Home Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "صحة وعافية", en: "Health wellness", page: "health.html", pageDisplay: "Health Page" },
+          { ar: "مزارع وحقول", en: "Farms farms", page: "farms.html", pageDisplay: "Farms Page" },
+          { ar: "أماكن أخرى", en: "Other places", page: "home.html", pageDisplay: "Home Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "اشعر بي الجوع", en: "I'm hungry", page: "restrunt.html", pageDisplay: "Restaurant Page" },
+          { ar: "تسوق وشراء", en: "Shopping spree", page: "stores.html", pageDisplay: "Stores Page" },
+          { ar: "ترفيه وتسلية", en: "Entertainment fun", page: "entertiment.html", pageDisplay: "Entertainment Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "رحلة سياحية", en: "Tour adventure", page: "toursim.html", pageDisplay: "Tourism Page" },
+          { ar: "فندق مريح", en: "Comfortable hotel", page: "hotel.html", pageDisplay: "Hotel Page" },
+          { ar: "خدمات صحية", en: "Health services", page: "health.html", pageDisplay: "Health Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "مطعم شهي", en: "Tasty restaurant", page: "restrunt.html", pageDisplay: "Restaurant Page" },
+          { ar: "ملابس وموضة", en: "Fashion clothes", page: "stores.html", pageDisplay: "Stores Page" },
+          { ar: "ألعاب وتسلية", en: "Games entertainment", page: "entertiment.html", pageDisplay: "Entertainment Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "مكان للنزهة", en: "Place to visit", page: "toursim.html", pageDisplay: "Tourism Page" },
+          { ar: "غرفة فندقية", en: "Hotel room", page: "hotel.html", pageDisplay: "Hotel Page" },
+          { ar: "منتج صحي", en: "Health product", page: "health.html", pageDisplay: "Health Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "وجبة سريعة", en: "Quick meal", page: "restrunt.html", pageDisplay: "Restaurant Page" },
+          { ar: "متجر إلكترونيات", en: "Electronics store", page: "stores.html", pageDisplay: "Stores Page" },
+          { ar: "حفلة موسيقية", en: "Music event", page: "entertiment.html", pageDisplay: "Entertainment Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "رحلة عائلية", en: "Family trip", page: "toursim.html", pageDisplay: "Tourism Page" },
+          { ar: "إقامة مريحة", en: "Cozy stay", page: "hotel.html", pageDisplay: "Hotel Page" },
+          { ar: "مشورة طبية", en: "Medical advice", page: "health.html", pageDisplay: "Health Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "عشاء رومانسي", en: "Romantic dinner", page: "restrunt.html", pageDisplay: "Restaurant Page" },
+          { ar: "أحذية وحقائب", en: "Shoes bags", page: "stores.html", pageDisplay: "Stores Page" },
+          { ar: "فيلم وسينما", en: "Movie cinema", page: "entertiment.html", pageDisplay: "Entertainment Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "استكشاف معالم", en: "Explore landmarks", page: "toursim.html", pageDisplay: "Tourism Page" },
+          { ar: "منتجع فندقي", en: "Hotel resort", page: "hotel.html", pageDisplay: "Hotel Page" },
+          { ar: "استشارة صحية", en: "Health consult", page: "health.html", pageDisplay: "Health Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "طعام صحي", en: "Healthy food", page: "restrunt.html", pageDisplay: "Restaurant Page" },
+          { ar: "مجوهرات فاخرة", en: "Luxury jewelry", page: "stores.html", pageDisplay: "Stores Page" },
+          { ar: "عرض ترفيهي", en: "Show entertainment", page: "entertiment.html", pageDisplay: "Entertainment Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "جولة سياحية منظمة", en: "Guided tour", page: "toursim.html", pageDisplay: "Tourism Page" },
+          { ar: "فندق فاخر", en: "Luxury hotel", page: "hotel.html", pageDisplay: "Hotel Page" },
+          { ar: "مركز لياقة صحي", en: "Fitness center", page: "health.html", pageDisplay: "Health Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "قهوة ومعجنات", en: "Coffee pastries", page: "restrunt.html", pageDisplay: "Restaurant Page" },
+          { ar: "أثاث منزلي", en: "Home furniture", page: "stores.html", pageDisplay: "Stores Page" },
+          { ar: "حفلة احتفالية", en: "Party celebration", page: "entertiment.html", pageDisplay: "Entertainment Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "شاطئ وبحر", en: "Beach sea", page: "toursim.html", pageDisplay: "Tourism Page" },
+          { ar: "إجازة فندقية", en: "Hotel vacation", page: "hotel.html", pageDisplay: "Hotel Page" },
+          { ar: "عيادة طبية", en: "Medical clinic", page: "health.html", pageDisplay: "Health Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "مأكولات بحرية", en: "Seafood restaurant", page: "restrunt.html", pageDisplay: "Restaurant Page" },
+          { ar: "كتب وأدوات كتابة", en: "Books stationery", page: "stores.html", pageDisplay: "Stores Page" },
+          { ar: "ألعاب ومرح", en: "Games fun", page: "entertiment.html", pageDisplay: "Entertainment Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "رحلة جبلية", en: "Mountain trip", page: "toursim.html", pageDisplay: "Tourism Page" },
+          { ar: "نزل ريفي", en: "Rural lodge", page: "hotel.html", pageDisplay: "Hotel Page" },
+          { ar: "صيدلية وأدوية", en: "Pharmacy medicines", page: "health.html", pageDisplay: "Health Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "مطعم آسيوي", en: "Asian restaurant", page: "restrunt.html", pageDisplay: "Restaurant Page" },
+          { ar: "ألعاب وفيديو", en: "Games video", page: "stores.html", pageDisplay: "Stores Page" },
+          { ar: "حفل موسيقي", en: "Concert music", page: "entertiment.html", pageDisplay: "Entertainment Page" }
+        ]
+      },
+      {
+        ar: "ماذا تبحث عنه اليوم؟",
+        en: "What are you looking for today?",
+        answers: [
+          { ar: "موقع أثري", en: "Historic site", page: "toursim.html", pageDisplay: "Tourism Page" },
+          { ar: "شقة فندقية", en: "Hotel apartment", page: "hotel.html", pageDisplay: "Hotel Page" },
+          { ar: "مشروب صحي", en: "Healthy drink", page: "health.html", pageDisplay: "Health Page" }
+        ]
+      }
+    ];
+
+    let answeredQuestions = JSON.parse(localStorage.getItem('hayyak_answered_questions') || '[]');
+
+    function getNextQuestion() {
+      if (answeredQuestions.length < questionsList.length) {
+        // Find first unanswered question
+        for (let i = 0; i < questionsList.length; i++) {
+          if (!answeredQuestions.includes(i)) return i;
+        }
+      }
+      // All answered, return random question
+      return Math.floor(Math.random() * questionsList.length);
+    }
+
+    function showQuestion() {
+      const questionIndex = getNextQuestion();
+      const question = questionsList[questionIndex];
+      
+      // Update title
+      document.getElementById('questionTitle').textContent = 
+        currentLanguage === 'ar' ? question.ar : question.en;
+      
+      // Update options
+      const optionsContainer = document.getElementById('questionOptions');
+      optionsContainer.innerHTML = '';
+      
+      question.answers.forEach((answer, idx) => {
+        const answerText = currentLanguage === 'ar' ? answer.ar : answer.en;
+        const html = `
+          <div class="question-option">
+            <label>
+              <input type="radio" name="answer" value="${idx}" required>
+              ${answerText}
+            </label>
+          </div>
+        `;
+        optionsContainer.innerHTML += html;
+      });
+      
+      // Add "Other" option
+      const otherText = currentLanguage === 'ar' ? 'أخرى' : 'Other';
+      optionsContainer.innerHTML += `
+        <div class="question-option">
+          <label>
+            <input type="radio" name="answer" value="other" required>
+            ${otherText}
+          </label>
+        </div>
+      `;
+      
+      // Store current question index for submission
+      document.getElementById('questionModal').dataset.questionIndex = questionIndex;
+      
+      // Show modal
+      document.getElementById('questionModal').classList.add('active');
+    }
+
+    function answerQuestion() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected) {
+        showNotification(currentLanguage === 'ar' ? 'الرجاء اختيار إجابة' : 'Please select an answer');
+        return;
+      }
+
+      const questionIndex = parseInt(document.getElementById('questionModal').dataset.questionIndex);
+      const question = questionsList[questionIndex];
+      const selectedValue = selected.value;
+      
+      // Add to answered if not already
+      if (!answeredQuestions.includes(questionIndex)) {
+        answeredQuestions.push(questionIndex);
+        localStorage.setItem('hayyak_answered_questions', JSON.stringify(answeredQuestions));
+      }
+      
+      // Get the answer and redirect info
+      let targetAnswer = null;
+      if (selectedValue === 'other') {
+        // "Other" option selected
+        showNotification(currentLanguage === 'ar' ? 'سيتم إعادة تحميل الصفحة' : 'Page will reload');
+        setTimeout(() => {
+          document.getElementById('questionModal').classList.remove('active');
+        }, 500);
+        return;
+      } else {
+        const answerIndex = parseInt(selectedValue);
+        targetAnswer = question.answers[answerIndex];
+      }
+      
+      // Show confirmation message with custom redirect notification
+      if (targetAnswer && targetAnswer.page) {
+        const message = currentLanguage === 'ar' 
+          ? `سيتم نقلك الآن إلى ${targetAnswer.pageDisplay}` 
+          : `You will now be transported to ${targetAnswer.pageDisplay}`;
+        
+        showNotification(message);
+        
+        // Redirect after short delay
+        setTimeout(() => {
+          document.getElementById('questionModal').classList.remove('active');
+          window.location.href = targetAnswer.page;
+        }, 1500);
+      } else {
+        // Close modal if no redirect info
+        document.getElementById('questionModal').classList.remove('active');
+      }
+    }
+
+    function skipQuestion() {
+      document.getElementById('questionModal').classList.remove('active');
+    }
+
+    // Add event listeners when DOM is ready
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('submitQuestion').addEventListener('click', answerQuestion);
+      document.getElementById('skipQuestion').addEventListener('click', skipQuestion);
+      
+      // Track visits to home.html - show question every 2 visits
+      
+      const profile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+
+      // --- Dark Mode Logic ---
+      if (profile.theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+
+      // Show question only once per session (when opening the app)
+      if (!sessionStorage.getItem('hayyak_has_visited_home')) {
+        sessionStorage.setItem('hayyak_has_visited_home', 'true');
+        setTimeout(showQuestion, 800);
+      }
+    });
+
+    // ==================== LANGUAGE STATE ====================    
+    let currentLanguage = 'ar';
+    
+    // Translation function
+    function toggleLanguage() {
+      const btn = document.getElementById('translateBtn');
+      btn.classList.add('switching');
+      
+      // Switch language
+      currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+      
+      // Update button text
+      const langText = btn.querySelector('span:last-child');
+      langText.textContent = currentLanguage === 'ar' ? 'English' : 'العربية';
+      
+      // Update page direction
+      document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = currentLanguage;
+      
+      // Update page title
+      document.title = currentLanguage === 'ar' ? 'حياك | HAYYAK' : 'Hayyak | Home';
+      
+      // Save language preference
+      const profile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      profile.language = currentLanguage;
+      localStorage.setItem('hayyak_user_profile', JSON.stringify(profile));
+      
+      // Translate all content
+      translatePage();
+      
+      // Update question modal content if visible
+      const questionModal = document.getElementById('questionModal');
+      if (questionModal && questionModal.classList.contains('active')) {
+        const questionIndex = parseInt(questionModal.dataset.questionIndex);
+        const question = questionsList[questionIndex];
+        
+        // Update question title
+        document.getElementById('questionTitle').textContent = 
+          currentLanguage === 'ar' ? question.ar : question.en;
+        
+        // Re-render options
+        const optionsContainer = document.getElementById('questionOptions');
+        optionsContainer.innerHTML = '';
+        
+        question.answers.forEach((answer, idx) => {
+          const answerText = currentLanguage === 'ar' ? answer.ar : answer.en;
+          const html = `
+            <div class="question-option">
+              <label>
+                <input type="radio" name="answer" value="${idx}" required>
+                ${answerText}
+              </label>
+            </div>
+          `;
+          optionsContainer.innerHTML += html;
+        });
+        
+        const otherText = currentLanguage === 'ar' ? 'أخرى' : 'Other';
+        optionsContainer.innerHTML += `
+          <div class="question-option">
+            <label>
+              <input type="radio" name="answer" value="other" required>
+              ${otherText}
+            </label>
+          </div>
+        `;
+      }
+      
+      // Update welcome message with user's name
+      updateWelcomeMessage();
+      
+      // Show notification
+      showNotification(currentLanguage === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English');
+      
+      // Remove animation class
+      setTimeout(() => {
+        btn.classList.remove('switching');
+      }, 500);
+    }
+    
+    // Translate the page
+    function translatePage() {
+      console.log('Translating to:', currentLanguage);
+      
+      // 1. Translate FOOTER (explicitly target the footer element)
+      const footer = document.getElementById('site-footer');
+      if (footer && footer.hasAttribute('data-ar') && footer.hasAttribute('data-en')) {
+        const footerText = currentLanguage === 'ar' ? 
+          footer.getAttribute('data-ar') : 
+          footer.getAttribute('data-en');
+        footer.textContent = footerText;
+        console.log('Footer translated:', footerText);
+      }
+      
+      // 2. Translate CATEGORIES (emoji stays separate)
+      document.querySelectorAll('.cat-text').forEach(element => {
+        if (element.hasAttribute('data-ar') && element.hasAttribute('data-en')) {
+          const text = currentLanguage === 'ar' ? 
+            element.getAttribute('data-ar') : 
+            element.getAttribute('data-en');
+          element.textContent = text;
+        }
+      });
+      
+      // 3. Translate all elements with data-ar and data-en attributes
+      document.querySelectorAll('[data-ar]:not(.cat-text):not(footer)').forEach(element => {
+        if (element.hasAttribute('data-ar') && element.hasAttribute('data-en')) {
+          const text = currentLanguage === 'ar' ? 
+            element.getAttribute('data-ar') : 
+            element.getAttribute('data-en');
+          element.textContent = text;
+        }
+      });
+      
+      // 4. Translate placeholders
+      document.querySelectorAll('[data-ar-placeholder]').forEach(element => {
+        if (element.hasAttribute('data-ar-placeholder') && element.hasAttribute('data-en-placeholder')) {
+          element.placeholder = currentLanguage === 'ar' ? 
+            element.getAttribute('data-ar-placeholder') : 
+            element.getAttribute('data-en-placeholder');
+        }
+      });
+      
+      // 5. Translate aria-labels
+      document.querySelectorAll('[data-ar-label]').forEach(element => {
+        if (element.hasAttribute('data-ar-label') && element.hasAttribute('data-en-label')) {
+          element.setAttribute('aria-label', currentLanguage === 'ar' ? 
+            element.getAttribute('data-ar-label') : 
+            element.getAttribute('data-en-label'));
+        }
+      });
+      
+      // 6. Translate alt text for images
+      document.querySelectorAll('[data-ar-alt]').forEach(element => {
+        if (element.hasAttribute('data-ar-alt') && element.hasAttribute('data-en-alt')) {
+          element.setAttribute('alt', currentLanguage === 'ar' ? 
+            element.getAttribute('data-ar-alt') : 
+            element.getAttribute('data-en-alt'));
+        }
+      });
+      
+      // 7. Translate section titles
+      document.querySelectorAll('.section-title').forEach(title => {
+        if (title.hasAttribute('data-ar') && title.hasAttribute('data-en')) {
+          title.textContent = currentLanguage === 'ar' ? 
+            title.getAttribute('data-ar') : 
+            title.getAttribute('data-en');
+        }
+      });
+      
+      // 8. Translate history panel title
+      const historyTitle = document.querySelector('.history-panel h3');
+      if (historyTitle && historyTitle.hasAttribute('data-ar') && historyTitle.hasAttribute('data-en')) {
+        historyTitle.textContent = currentLanguage === 'ar' ? 
+          historyTitle.getAttribute('data-ar') : 
+          historyTitle.getAttribute('data-en');
+      }
+      
+      console.log('Translation complete!');
+    }
+    
+    // Update welcome message with user's name
+    function updateWelcomeMessage() {
+      const userProfile = JSON.parse(localStorage.getItem('hayyak_user_profile'));
+      const questionElement = document.querySelector('.question');
+      
+      const userName = currentLanguage === 'ar' ? (userProfile.nameAr || userProfile.name) : (userProfile.nameEn || userProfile.name);
+      
+      if (userProfile && userName) {
+        const prefix = currentLanguage === 'ar' ? 
+          questionElement.getAttribute('data-ar-prefix') : 
+          questionElement.getAttribute('data-en-prefix');
+        const suffix = currentLanguage === 'ar' ? 
+          questionElement.getAttribute('data-ar-suffix') : 
+          questionElement.getAttribute('data-en-suffix');
+        
+        // If prefix is empty, just show name + suffix
+        if (prefix === '') {
+          questionElement.textContent = ``;
+        } else {
+          questionElement.textContent = ` `;
+        }
+      } else {
+        // If no user profile, show default message
+        const defaultMsg = currentLanguage === 'ar' ? 
+          'ماذا تبحث عنه اليوم؟' : 
+          'What are you looking for today?';
+        questionElement.textContent = defaultMsg;
+      }
+    }
+
+    // Check for user profile
+    const userProfile = JSON.parse(localStorage.getItem('hayyak_user_profile'));
+    if (!userProfile) {
+      window.location.href = 'index.html';
+    } else {
+      updateWelcomeMessage();
+    }
+
+    function toggleHistory() {
+      const panel = document.getElementById('history-panel');
+      panel.classList.toggle('active');
+      if (panel.classList.contains('active')) {
+        loadHistory();
+      }
+    }
+
+    function loadHistory() {
+      const list = document.getElementById('history-list');
+      const history = JSON.parse(localStorage.getItem('hayyak_history') || '[]');
+      
+      if (history.length === 0) {
+        list.innerHTML = `<div style="text-align:center; color:var(--muted); padding:20px;">
+          ${currentLanguage === 'ar' ? 'لا يوجد سجل زيارات بعد' : 'No visit history yet'}
+        </div>`;
+        return;
+      }
+
+      list.innerHTML = history.map(item => `
+        <div class="history-item" onclick="locateHistory(${item.lat}, ${item.lon})">
+          <div style="font-weight:700">${item.title}</div>
+          <div style="font-size:12px; color:var(--muted)">
+            ${new Date(item.date).toLocaleDateString(currentLanguage === 'ar' ? 'ar-AE' : 'en-US')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function locateHistory(lat, lon) {
+      const f = 0.01;
+      const bbox = `${lon-f},${lat-f},${lon+f},${lat+f}`;
+      document.getElementById('user-map').src = `https://www.openstreetmap.org/export/embed.html?bbox=&layer=mapnik`;
+      toggleHistory();
+      
+      const message = currentLanguage === 'ar' ? 
+        `تم تحديد الموقع: ${lat.toFixed(4)}, ${lon.toFixed(4)}` :
+        `Location set to: ${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+      showNotification(message);
+    }
+
+    // Search functionality
+    document.getElementById('search-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && this.value.trim()) {
+        const searchTerm = this.value.trim();
+        const message = currentLanguage === 'ar' ? 
+          `جارٍ البحث عن: ` :
+          `Searching for: `;
+        showNotification(message);
+        this.value = '';
+      }
+    });
+    
+    // Show notification
+    function showNotification(message, type = 'info') {
+      // Remove any existing notification
+      const existingNotification = document.querySelector('.notification');
+      if (existingNotification) {
+        existingNotification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => existingNotification.remove(), 300);
+      }
+      
+      // Create new notification element
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+      notification.innerHTML = `
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: #d4af37; display: grid; place-items: center; font-size: 18px;">
+          ${type === 'error' ? '⚠️' : '💡'}
+        </div>
+        <div style="flex: 1;">
+          <div style="font-weight: 700; margin-bottom: 4px;">
+            ${currentLanguage === 'ar' ? (type === 'error' ? 'تنبيه' : 'إشعار') : (type === 'error' ? 'Alert' : 'Notification')}
+          </div>
+          <div style="font-size: 14px; opacity: 0.9;">${message}</div>
+        </div>
+        <button onclick="this.parentElement.style.animation='slideOut 0.3s ease'; setTimeout(() => this.parentElement.remove(), 300)" 
+                style="background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 0; width: 24px; height: 24px; display: grid; place-items: center;">
+          ×
+        </button>
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remove notification automatically after 5 seconds
+      setTimeout(() => {
+        if (notification.parentNode) {
+          notification.style.animation = 'slideOut 0.3s ease';
+          setTimeout(() => notification.remove(), 300);
+        }
+      }, 5000);
+    }
+
+    // Health tips data in both languages
+    const healthTips = {
+      ar: [
+        "💊 تذكر تناول أدويتك في موعدها",
+        "🥗 تناول وجبة إفطار صحية لتبدأ يومك بنشاط",
+        "💧 اشرب 8 أكواب من الماء يومياً",
+        "🚶‍♂️ امشِ 30 دقيقة يومياً لصحة قلبك",
+        "🧘‍♂️ خذ قسطاً من الراحة والتأمل لتخفيف القلق",
+        "📋 تابع قراءة السكر بانتظام إذا كنت مريض سكري",
+        "😊 الابتسام يقلل التوتر ويحسن المزاج",
+        "🥦 تجنب الأطعمة المسببة للحساسية",
+        "🌞 تعرض لأشعة الشمس الصباحية لفيتامين د",
+        "🧠 تمرن عقلك بالقراءة والألعاب الذهنية"
+      ],
+      en: [
+        "💊 Remember to take your medications on time",
+        "🥗 Eat a healthy breakfast to start your day energetically",
+        "💧 Drink 8 glasses of water daily",
+        "🚶‍♂️ Walk 30 minutes daily for heart health",
+        "🧘‍♂️ Take a break and meditate to reduce anxiety",
+        "📋 Monitor your sugar regularly if you have diabetes",
+        "😊 Smiling reduces stress and improves mood",
+        "🥦 Avoid foods that cause allergies",
+        "🌞 Get morning sun exposure for Vitamin D",
+        "🧠 Exercise your brain with reading and mental games"
+      ]
+    };
+
+    // Show health notification
+    function showHealthNotification() {
+      const privacySettings = {
+        healthNotifications: localStorage.getItem('healthNotifications') !== 'false'
+      };
+      
+      // Only if user has enabled health notifications
+      if (privacySettings.healthNotifications) {
+        const tips = currentLanguage === 'ar' ? healthTips.ar : healthTips.en;
+        const randomTip = tips[Math.floor(Math.random() * tips.length)];
+        
+        // Wait for page to fully load
+        setTimeout(() => {
+          showNotification(randomTip, 'info');
+        }, 2000);
+      }
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add click event to translate button
+      document.getElementById('translateBtn').addEventListener('click', toggleLanguage);
+      
+      // Apply profile language
+      if (userProfile && userProfile.language && userProfile.language !== currentLanguage) {
+        currentLanguage = userProfile.language;
+        document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = currentLanguage;
+        const btn = document.getElementById('translateBtn');
+        if (btn) {
+          const langText = btn.querySelector('span:last-child');
+          if (langText) langText.textContent = currentLanguage === 'ar' ? 'English' : 'العربية';
+        }
+        translatePage();
+      }
+
+      // Show health notification if enabled
+      if (userProfile && userProfile.name) {
+        showHealthNotification();
+      }
+    });
+  </script>
+</body>
+</html>

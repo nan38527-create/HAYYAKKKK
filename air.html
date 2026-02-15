@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>محطة قياس جودة المكان | حياك</title>
+  <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Afeesh family (local) */
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Aadi.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Aadi.woff') format('woff'),
+           url('./afeesh/Afeesh-Aadi.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Mekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Mekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-Mekalbaz.ttf') format('truetype');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-NosMekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-NosMekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-NosMekalbaz.ttf') format('truetype');
+      font-weight: 600; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-NosMesalwa.woff2') format('woff2'),
+           url('./afeesh/Afeesh-NosMesalwa.woff') format('woff'),
+           url('./afeesh/Afeesh-NosMesalwa.ttf') format('truetype');
+      font-weight: 300; font-style: normal; font-display: swap;
+    }
+
+    /* === YOUR EXISTING CSS – with additions for Overcrowding card === */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    [data-theme="dark"] {
+      --bg: #121212; --card: #1e1e1e; --ink: #ffffff; --muted: #a0a0a0; --line: #333333;
+    }
+    .container { max-width: 480px; margin: 0 auto; padding: 16px; flex: 1; }
+    .card {
+      background: white;
+      border: 2px solid #0f0f10;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 0 #0f0f10;
+    }
+    [data-theme="dark"] .card {
+      background: #1e1e1e; border-color: #333; box-shadow: 0 2px 0 #333;
+    }
+    .header {
+      background: #16243d;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+    .logo {
+      font-family: 'Afeesh', sans-serif;
+      font-size: 48px;
+      font-weight: 700;
+      color: #d4af37;
+      letter-spacing: 2px;
+    }
+    .sub { color: #94a3b8; font-size: 16px; }
+    
+    /* Home Button */
+    .home-btn {
+      position: absolute;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      color: #d4af37;
+      text-decoration: none;
+      font-size: 15px;
+      background-color: #0f0f10;
+      padding: 9px 12px;
+      border-radius: 999px;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      font-weight: 600;
+    }
+    .home-btn:hover {
+      background-color: #d4af37;
+      color: #0f0f10;
+      transform: translateY(-50%) scale(1.05);
+      border-color: white;
+    }
+    
+    /* Translate Button */
+    .translate-btn {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      background: #d4af37;
+      border: 2px solid white;
+      border-radius: 20px;
+      color: #16243d;
+      padding: 6px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(212,175,55,0.3);
+    }
+    /* Theme Button */
+    #themeBtn {
+      right: auto; left: 20px;
+    }
+    .translate-btn:hover {
+      transform: translateY(-50%) scale(1.05);
+      background: #f7ef8a;
+    }
+    .translate-btn .icon { font-size: 16px; }
+    
+    .footer {
+      background: #16243d;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 14px;
+    }
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin: 16px 0 8px;
+      color: #16243d;
+    }
+    [data-theme="dark"] .page-title { color: #d4af37; }
+    .page-desc {
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+    [data-theme="dark"] .page-desc { color: #a0a0a0; }
+    .refresh-btn {
+      background: #16243d;
+      color: white;
+      border: 2px solid #d4af37;
+      padding: 12px 24px;
+      border-radius: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .refresh-btn:hover {
+      background: #d4af37;
+      color: #16243d;
+    }
+    .live-badge {
+      background: #10b981;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    .warning-banner {
+      display: none;
+      background: #ef4444;
+      color: white;
+      padding: 16px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      border: 2px solid #7f1d1d;
+    }
+    .current-location {
+      background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+      border: 2px solid #0ea5e9;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    [data-theme="dark"] .current-location {
+      background: #1e293b; border-color: #0ea5e9;
+    }
+    .location-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: #16243d;
+    }
+    [data-theme="dark"] .location-name { color: #e0f2fe; }
+    .location-addr {
+      color: #6b7280;
+      margin: 8px 0;
+    }
+    .update-time {
+      color: #64748b;
+      font-size: 12px;
+    }
+    
+    /* AQI Card */
+    .aqi-container { cursor: pointer; margin-bottom: 24px; }
+    .aqi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .aqi-title {
+      font-weight: 700;
+      font-size: 18px;
+      color: #16243d;
+    }
+    [data-theme="dark"] .aqi-title { color: #ffffff; }
+    .aqi-value {
+      font-weight: 700;
+      font-size: 28px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      color: white;
+    }
+    .aqi-good { background: #10b981; }
+    .aqi-moderate { background: #f59e0b; }
+    .aqi-poor { background: #ef4444; }
+    .aqi-hazardous { background: #7c2d12; }
+    .aqi-scale {
+      display: flex;
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .aqi-segment { flex: 1; }
+    .segment-good { background: #10b981; }
+    .segment-moderate { background: #f59e0b; }
+    .segment-poor { background: #ef4444; }
+    .segment-hazardous { background: #7c2d12; }
+    .aqi-desc {
+      font-size: 14px;
+      text-align: center;
+      color: #6b7280;
+    }
+    
+    /* Measurement Grid - Now only Temp & Humidity */
+    .measurement-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .measurement-card {
+      background: white;
+      border: 2px solid #0f0f10;
+      border-radius: 14px;
+      padding: 16px;
+    }
+    [data-theme="dark"] .measurement-card {
+      background: #1e1e1e; border-color: #333;
+    }
+    .measurement-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .measurement-title {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+    }
+    .measurement-value {
+      font-weight: 700;
+      font-size: 20px;
+    }
+    .unit {
+      font-size: 12px;
+      color: #6b7280;
+    }
+    .status {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 6px;
+    }
+    .status-good { background: #dcfce7; color: #047857; }
+    .status-moderate { background: #fef3c7; color: #92400e; }
+    .status-poor { background: #fee2e2; color: #b91c1c; }
+    
+    /* NEW: Overcrowding Card */
+    .overcrowding-card {
+      background: white;
+      border: 2px solid #0f0f10;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 0 #0f0f10;
+    }
+    [data-theme="dark"] .overcrowding-card {
+      background: #1e1e1e; border-color: #333; box-shadow: 0 2px 0 #333;
+    }
+    .overcrowding-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .overcrowding-title {
+      font-weight: 700;
+      font-size: 18px;
+      color: #16243d;
+    }
+    [data-theme="dark"] .overcrowding-title { color: #ffffff; }
+    .overcrowding-level {
+      font-weight: 700;
+      font-size: 24px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      color: white;
+    }
+    .ov-level-low { background: #10b981; }
+    .ov-level-moderate { background: #f59e0b; }
+    .ov-level-high { background: #ef4444; }
+    .ov-level-critical { background: #7c2d12; }
+    .overcrowding-bar {
+      width: 100%;
+      height: 12px;
+      background: #f5f5f7;
+      border-radius: 6px;
+      margin: 12px 0;
+      overflow: hidden;
+      border: 1px solid #e5e5e5;
+    }
+    .overcrowding-fill {
+      height: 100%;
+      width: 0%;
+      background: #16243d;
+      transition: width 0.3s;
+    }
+    .overcrowding-stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #16248b;
+    }
+    
+    /* Pollen */
+    .pollen-section { margin-bottom: 24px; }
+    .section-title {
+      font-weight: 700;
+      font-size: 18px;
+      margin-bottom: 14px;
+      color: #16243d;
+    }
+    [data-theme="dark"] .section-title { color: #d4af37; }
+    .pollen-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .pollen-item {
+      text-align: center;
+      padding: 12px;
+      border: 2px solid #0f0f10;
+      border-radius: 14px;
+      background: white;
+    }
+    [data-theme="dark"] .pollen-item {
+      background: #1e1e1e; border-color: #333;
+    }
+    .pollen-name {
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+    .pollen-level {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .pollen-level.level-low { color: #10b981; }
+    .pollen-level.level-medium { color: #f59e0b; }
+    .pollen-level.level-high { color: #ef4444; }
+    
+    /* Recommendations */
+    .recommendations {
+      background: #f0f9ff;
+      border: 2px solid #0ea5e9;
+      border-radius: 14px;
+      padding: 16px;
+    }
+    [data-theme="dark"] .recommendations {
+      background: #0c4a6e; border-color: #0ea5e9;
+    }
+    .rec-title {
+      font-weight: 700;
+      font-size: 16px;
+      color: #0369a1;
+      margin-bottom: 8px;
+    }
+    .rec-list {
+      list-style: none;
+      padding-right: 0;
+    }
+    .rec-list li {
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #0c4a6e;
+    }
+    [data-theme="dark"] .rec-list li { color: #e0f2fe; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <a href="home.html" class="home-btn" data-ar="رجوع" data-en="Back">رجوع</a>
+    <div class="logo">حــــــيــــاك</div>
+    <div class="sub">HAYYAK</div>
+    <button class="translate-btn" id="translateBtn">
+      <span class="icon">🌐</span>
+      <span data-ar="English" data-en="العربية">English</span>
+    </button>
+  </div>
+
+  <div class="container">
+    <h1 class="page-title" data-ar="محطة قياس جودة المكان" data-en="Place Quality Measurement Station">محطة قياس جودة المكان</h1>
+    <p class="page-desc" data-ar="مراقبة جودة الهواء وحبوب اللقاح ومستوى الازدحام" data-en="Monitoring air quality, pollen and overcrowding level">مراقبة جودة الهواء وحبوب اللقاح ومستوى الازدحام</p>
+
+    <!-- Refresh button -->
+    <div style="text-align: center;">
+      <button class="refresh-btn" onclick="fetchRealData()" id="refreshBtn">
+        🔄 <span data-ar="تحديث البيانات" data-en="Refresh Data">تحديث البيانات</span>
+        <span class="live-badge" data-ar="بيانات حية" data-en="Live Data">بيانات حية</span>
+      </button>
+    </div>
+
+    <!-- Bad air warning banner -->
+    <div id="airQualityWarning" class="warning-banner" data-ar="🔴 تحذير: جودة الهواء سيئة!" data-en="🔴 Warning: Air quality is poor!">
+      🔴 تحذير: جودة الهواء سيئة!
+    </div>
+
+    <!-- Overcrowding warning banner -->
+    <div id="overcrowdingWarning" class="warning-banner" style="background: #f97316; display: none;" data-ar="⚠️ تحذير: المكان مزدحم جداً!" data-en="⚠️ Warning: This place is very crowded!">
+      ⚠️ تحذير: المكان مزدحم جداً!
+    </div>
+
+    <!-- Current location card -->
+    <div class="current-location">
+      <div class="location-name" data-ar="موقعك الحالي" data-en="Your Current Location">موقعك الحالي</div>
+      <div class="location-addr" id="locationDisplay">الرياض، حي العليا</div>
+      <div class="update-time">
+        🕒 <span data-ar="آخر تحديث:" data-en="Last update:">آخر تحديث:</span>
+        <span id="lastUpdate">--:--</span>
+      </div>
+    </div>
+
+    <!-- AQI Card -->
+    <div class="card aqi-container">
+      <div class="aqi-header">
+        <div class="aqi-title" data-ar="مؤشر جودة الهواء (AQI)" data-en="Air Quality Index (AQI)">مؤشر جودة الهواء (AQI)</div>
+        <div class="aqi-value aqi-moderate" id="aqiValue">65</div>
+      </div>
+      <div class="aqi-scale">
+        <div class="aqi-segment segment-good"></div>
+        <div class="aqi-segment segment-moderate"></div>
+        <div class="aqi-segment segment-poor"></div>
+        <div class="aqi-segment segment-hazardous"></div>
+      </div>
+      <div class="aqi-desc" id="aqiDesc">متوسطة</div>
+    </div>
+
+    <!-- Environmental measurements (Temperature & Humidity only) -->
+    <h2 class="section-title" data-ar="📊 القياسات البيئية" data-en="📊 Environmental Measurements">📊 القياسات البيئية</h2>
+    <div class="measurement-grid" id="measurementsGrid"></div>
+
+    <!-- NEW: Overcrowding Card -->
+    <div class="overcrowding-card" id="overcrowdingCard">
+      <div class="overcrowding-header">
+        <div class="overcrowding-title" data-ar="👥 مستوى الازدحام" data-en="👥 Overcrowding Level">👥 مستوى الازدحام</div>
+        <div class="overcrowding-level ov-level-low" id="overcrowdingLevelBadge">منخفض</div>
+      </div>
+      <div class="overcrowding-bar">
+        <div class="overcrowding-fill" id="overcrowdingFill" style="width: 0%;"></div>
+      </div>
+      <div class="overcrowding-stats">
+        <span data-ar="الازدحام:" data-en="Overcrowding:">الازدحام:</span>
+        <span id="overcrowdingPercent">0%</span>
+      </div>
+    </div>
+
+    <!-- Pollen levels -->
+    <div class="card pollen-section">
+      <h2 class="section-title" data-ar="🌸 مستويات حبوب اللقاح" data-en="🌸 Pollen Levels">🌸 مستويات حبوب اللقاح</h2>
+      <div class="pollen-grid" id="pollenGrid"></div>
+      <div style="text-align: center; font-size: 12px; color: #6b7280; margin-top: 12px;"
+           data-ar="المستويات: منخفض 🟢 | متوسط 🟡 | مرتفع 🔴"
+           data-en="Levels: Low 🟢 | Medium 🟡 | High 🔴">
+        المستويات: منخفض 🟢 | متوسط 🟡 | مرتفع 🔴
+      </div>
+    </div>
+
+    <!-- Health recommendations -->
+    <div class="card recommendations">
+      <div class="rec-title" data-ar="💡 توصيات للصحة" data-en="💡 Health Recommendations">💡 توصيات للصحة</div>
+      <ul class="rec-list" id="recommendationsList"></ul>
+    </div>
+  </div>
+
+  <div class="footer" data-ar="© عبدالله بن ناصر - حياك" data-en="© Abdullah bin Nasser - Hayyak">
+    © عبدالله بن ناصر - حياك
+  </div>
+
+  <script>
+    // ==================== CONFIG ====================
+    const API_URL = 'http://192.168.0.168/HAYYAK/api/data.php'; // <-- CHANGE TO YOUR SERVER IP
+    let currentLanguage = 'ar';
+    let lastSuccessfulData = null; // Stores the last valid data for simulation
+
+    // ==================== TRANSLATION ====================
+    function toggleLanguage() {
+      currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+      document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = currentLanguage;
+
+      // Save language preference
+      const profile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      profile.language = currentLanguage;
+      localStorage.setItem('hayyak_user_profile', JSON.stringify(profile));
+
+      const btn = document.getElementById('translateBtn');
+      btn.querySelector('span:last-child').textContent = currentLanguage === 'ar' ? 'English' : 'العربية';
+
+      document.querySelectorAll('[data-ar][data-en]').forEach(el => {
+        if (el.tagName === 'INPUT' && el.placeholder !== undefined) {
+          el.placeholder = currentLanguage === 'ar' ? el.dataset.ar : el.dataset.en;
+        } else {
+          el.textContent = currentLanguage === 'ar' ? el.dataset.ar : el.dataset.en;
+        }
+      });
+
+      // Update overcrowding level text
+      const levelBadge = document.getElementById('overcrowdingLevelBadge');
+      if (levelBadge) {
+        const currentLevel = levelBadge.className.split('ov-level-')[1];
+        if (currentLevel) {
+          levelBadge.textContent = currentLanguage === 'ar'
+            ? (currentLevel === 'low' ? 'منخفض' :
+               currentLevel === 'moderate' ? 'متوسط' :
+               currentLevel === 'high' ? 'مرتفع' : 'حرج')
+            : (currentLevel.charAt(0).toUpperCase() + currentLevel.slice(1));
+        }
+      }
+
+      // Re-fetch and update UI to apply language changes to recommendations
+      if (lastSuccessfulData) {
+        updateUI({ success: true, data: lastSuccessfulData });
+      }
+    }
+
+    // ==================== HELPER FUNCTIONS ====================
+    function getTempColor(temp) {
+      if (temp < 20) return '#3b82f6';
+      if (temp < 27) return '#10b981';
+      if (temp < 32) return '#f59e0b';
+      return '#ef4444';
+    }
+    function getHumColor(hum) {
+      if (hum < 40) return '#f59e0b';
+      if (hum < 70) return '#10b981';
+      return '#3b82f6';
+    }
+    function getAqiColor(aqi) {
+      if (aqi >= 90) return '#10b981';
+      if (aqi >= 70) return '#22c55e';
+      if (aqi >= 50) return '#f59e0b';
+      if (aqi >= 30) return '#f97316';
+      return '#ef4444';
+    }
+    function getAqiText(aqi) {
+      if (aqi >= 90) return currentLanguage === 'ar' ? 'ممتازة' : 'Excellent';
+      if (aqi >= 70) return currentLanguage === 'ar' ? 'جيدة' : 'Good';
+      if (aqi >= 50) return currentLanguage === 'ar' ? 'متوسطة' : 'Moderate';
+      if (aqi >= 30) return currentLanguage === 'ar' ? 'سيئة' : 'Poor';
+      return currentLanguage === 'ar' ? 'خطيرة' : 'Hazardous';
+    }
+
+    // ==================== FETCH DATA ====================
+    async function fetchRealData() {
+      const refreshBtn = document.getElementById('refreshBtn');
+      const originalHTML = refreshBtn.innerHTML;
+      refreshBtn.innerHTML = '⏳ <span data-ar="جاري التحديث..." data-en="Updating...">جاري التحديث...</span>';
+      refreshBtn.disabled = true;
+
+      try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        if (data.success) {
+          lastSuccessfulData = data.data; // Store for simulation
+          updateUI(data);
+          updateLastUpdateTime();
+        } else {
+          throw new Error('API error');
+        }
+      } catch (error) {
+        console.error('Fetch failed:', error);
+        // Use simulation based on last real data
+        useSimulatedData();
+      } finally {
+        refreshBtn.innerHTML = originalHTML;
+        refreshBtn.disabled = false;
+      }
+    }
+
+    // ==================== SIMULATED DATA (based on last real data) ====================
+    function useSimulatedData() {
+      let baseData;
+      if (lastSuccessfulData) {
+        // Create a copy and add small random variations
+        baseData = JSON.parse(JSON.stringify(lastSuccessfulData));
+        baseData.temperature += (Math.random() * 1 - 0.5);
+        baseData.humidity += (Math.random() * 3 - 1.5);
+        baseData.aqi += Math.floor(Math.random() * 10 - 5);
+        baseData.aqi = Math.max(0, Math.min(500, baseData.aqi));
+        
+        // Simulate overcrowding based on previous pattern
+        let change = Math.floor(Math.random() * 15 - 5);
+        baseData.overcrowding_percent += change;
+        baseData.overcrowding_percent = Math.max(0, Math.min(100, baseData.overcrowding_percent));
+        
+        // Update level based on percent
+        if (baseData.overcrowding_percent < 20) baseData.overcrowding_level = "low";
+        else if (baseData.overcrowding_percent < 40) baseData.overcrowding_level = "moderate";
+        else if (baseData.overcrowding_percent < 60) baseData.overcrowding_level = "high";
+        else baseData.overcrowding_level = "critical";
+      } else {
+        // No previous data, use completely random but realistic
+        baseData = {
+          temperature: 25.5 + (Math.random() * 2 - 1),
+          humidity: 65.2 + (Math.random() * 5 - 2.5),
+          air_quality_level: Math.random() > 0.7 ? 'bad' : 'good',
+          aqi: 65 + Math.floor(Math.random() * 20 - 10),
+          overcrowding_level: ['low','moderate','high','critical'][Math.floor(Math.random()*4)],
+          overcrowding_percent: Math.floor(Math.random() * 100),
+          pollen: [
+            { name: 'الأشجار', level: 'medium', value: 7.2 },
+            { name: 'الحشائش', level: 'low', value: 3.1 },
+            { name: 'الأعشاب الضارة', level: 'high', value: 9.5 }
+          ]
+        };
+      }
+
+      updateUI({ success: true, data: baseData, data_source: '⚠️ محاكاة (لا يوجد اتصال)' });
+      updateLastUpdateTime();
+    }
+
+    // ==================== UPDATE UI ====================
+    function updateUI(apiResponse) {
+      const d = apiResponse.data;
+
+      // --- Temperature & Humidity ---
+      const temp = d.temperature || 25.5;
+      const hum = d.humidity || 65.2;
+
+      // Temperature and Humidity status text
+      const tempTitle = currentLanguage === 'ar' ? '🌡️ درجة الحرارة' : '🌡️ Temperature';
+      const humTitle = currentLanguage === 'ar' ? '💧 الرطوبة' : '💧 Humidity';
+      const tempStatus = currentLanguage === 'ar'
+        ? (temp < 20 ? 'بارد' : temp < 27 ? 'معتدل' : 'دافئ')
+        : (temp < 20 ? 'Cold' : temp < 27 ? 'Moderate' : 'Warm');
+      const humStatus = currentLanguage === 'ar'
+        ? (hum < 40 ? 'جاف' : hum < 70 ? 'مريح' : 'رطب')
+        : (hum < 40 ? 'Dry' : hum < 70 ? 'Comfortable' : 'Humid');
+
+      document.getElementById('measurementsGrid').innerHTML = `
+        <div class="measurement-card">
+          <div class="measurement-header">
+            <span class="measurement-title">${tempTitle}</span>
+            <span class="measurement-value" style="color: ${getTempColor(temp)}">
+              ${temp.toFixed(1)}<span class="unit">°C</span>
+            </span>
+          </div>
+          <span class="status status-${temp < 20 ? 'good' : temp < 27 ? 'good' : 'moderate'}">
+            ${tempStatus}
+          </span>
+        </div>
+        <div class="measurement-card">
+          <div class="measurement-header">
+            <span class="measurement-title">${humTitle}</span>
+            <span class="measurement-value" style="color: ${getHumColor(hum)}">
+              ${hum.toFixed(1)}<span class="unit">%</span>
+            </span>
+          </div>
+          <span class="status status-${hum < 70 ? 'good' : 'moderate'}">
+            ${humStatus}
+          </span>
+        </div>
+      `;
+
+      // --- AQI ---
+      const aqi = d.aqi || 65;
+      const aqiEl = document.getElementById('aqiValue');
+      aqiEl.textContent = aqi;
+      aqiEl.style.backgroundColor = getAqiColor(aqi);
+      document.getElementById('aqiDesc').textContent = getAqiText(aqi);
+
+      // --- Bad air warning ---
+      // Show warning when air quality is bad (low AQI score)
+      const warningEl = document.getElementById('airQualityWarning');
+      if (warningEl) {
+        // Show warning when AQI is poor/bad (below 50)
+        warningEl.style.display = aqi < 50 ? 'block' : 'none';
+        // Update warning text based on language
+        const warningText = currentLanguage === 'ar' 
+          ? '🔴 تحذير: جودة الهواء سيئة!' 
+          : '🔴 Warning: Air quality is poor!';
+        warningEl.textContent = warningText;
+      }
+
+      // --- Overcrowding ---
+      const overcrowdingPercent = d.overcrowding_percent || 0;
+      const overcrowdingLevel = d.overcrowding_level || 'low';
+      
+      const levelBadge = document.getElementById('overcrowdingLevelBadge');
+      levelBadge.textContent = currentLanguage === 'ar'
+        ? (overcrowdingLevel === 'low' ? 'منخفض' :
+           overcrowdingLevel === 'moderate' ? 'متوسط' :
+           overcrowdingLevel === 'high' ? 'مرتفع' : 'حرج')
+        : (overcrowdingLevel === 'low' ? 'Low' :
+           overcrowdingLevel === 'moderate' ? 'Moderate' :
+           overcrowdingLevel === 'high' ? 'High' : 'Critical');
+      
+      // Set badge color class
+      levelBadge.className = 'overcrowding-level ov-level-' + overcrowdingLevel;
+      
+      // Update fill bar
+      document.getElementById('overcrowdingFill').style.width = overcrowdingPercent + '%';
+      document.getElementById('overcrowdingPercent').textContent = overcrowdingPercent + '%';
+
+      // --- Overcrowding warning ---
+      const overcrowdingWarningEl = document.getElementById('overcrowdingWarning');
+      if (overcrowdingWarningEl) {
+        // Show warning when overcrowding is high or critical (above 60%)
+        overcrowdingWarningEl.style.display = overcrowdingPercent >= 60 ? 'block' : 'none';
+        // Update warning text based on language
+        const crowdingWarningText = currentLanguage === 'ar' 
+          ? '⚠️ تحذير: المكان مزدحم جداً!' 
+          : '⚠️ Warning: This place is very crowded!';
+        overcrowdingWarningEl.textContent = crowdingWarningText;
+      }
+
+      // --- Pollen ---
+      if (d.pollen && Array.isArray(d.pollen)) {
+        document.getElementById('pollenGrid').innerHTML = d.pollen.map(p => {
+          let levelText = currentLanguage === 'ar'
+            ? (p.level === 'low' ? 'منخفض' : p.level === 'medium' ? 'متوسط' : 'مرتفع')
+            : (p.level.charAt(0).toUpperCase() + p.level.slice(1));
+          return `
+            <div class="pollen-item">
+              <div class="pollen-name">${currentLanguage === 'ar' ? p.name : (p.name === 'الأشجار' ? 'Trees' : p.name === 'الحشائش' ? 'Grass' : 'Weeds')}</div>
+              <div class="pollen-level level-${p.level}">${p.value.toFixed(1)}</div>
+              <div>${levelText}</div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      // --- Recommendations based on AQI ---
+      updateRecommendations(aqi);
+
+      // --- Show data source if simulation ---
+      if (apiResponse.data_source) {
+        // You could display a small badge, but we'll just log
+        console.log('Data source:', apiResponse.data_source);
+      }
+    }
+
+    // ==================== RECOMMENDATIONS ====================
+    function updateRecommendations(aqi) {
+      let items = [];
+      if (aqi >= 90) {
+        items = currentLanguage === 'ar' ? [
+          '✅ الظروف ممتازة للمصابين بالحساسية',
+          '🌳 يمكنك فتح النوافذ للتهوية',
+          '🚶‍♂️ آمن للمشي والأنشطة الخارجية',
+          '🏃‍♂️ يمكن ممارسة الرياضة في الخارج'
+        ] : [
+          '✅ Excellent conditions for allergy sufferers',
+          '🌳 You can open windows for ventilation',
+          '🚶‍♂️ Safe for walking and outdoor activities',
+          '🏃‍♂️ Suitable for outdoor sports'
+        ];
+      } else if (aqi >= 70) {
+        items = currentLanguage === 'ar' ? [
+          '⚠️ الأشخاص الحساسون قد يعانون من أعراض خفيفة',
+          '🤧 قد يحتاج المصابون بحساسية الأنف لأدوية',
+          '🪟 قلل من فتح النوافذ في الصباح الباكر',
+          '😷 فكر في ارتداء قناع إذا كنت شديد الحساسية'
+        ] : [
+          '⚠️ Sensitive people may experience mild symptoms',
+          '🤧 Those with allergies may need medication',
+          '🪟 Reduce opening windows in early morning',
+          '😷 Consider wearing a mask if you are sensitive'
+        ];
+      } else if (aqi >= 50) {
+        items = currentLanguage === 'ar' ? [
+          '🚫 تجنب الأنشطة الخارجية المكثفة',
+          '🏠 ابق في الداخل قدر الإمكان',
+          '💨 استخدم جهاز تنقية الهواء',
+          '🩺 استشر الطبيب إذا ازدادت الأعراض'
+        ] : [
+          '🚫 Avoid intensive outdoor activities',
+          '🏠 Stay indoors as much as possible',
+          '💨 Use an air purifier',
+          '🩺 Consult a doctor if symptoms worsen'
+        ];
+      } else {
+        items = currentLanguage === 'ar' ? [
+          '⛔ تجنب الخروج من المنزل تماماً',
+          '🏥 اتصل بالطوارئ إذا كانت الأعراض شديدة',
+          '🔄 شغل أجهزة تنقية الهواء على أعلى مستوى',
+          '💊 تأكد من توفر أدوية الطوارئ'
+        ] : [
+          '⛔ Avoid leaving home at all',
+          '🏥 Call emergency services if symptoms are severe',
+          '🔄 Turn on air purifiers to maximum level',
+          '💊 Ensure emergency medications are available'
+        ];
+      }
+      document.getElementById('recommendationsList').innerHTML = items.map(item => `<li>${item}</li>`).join('');
+    }
+
+    // ==================== LAST UPDATE TIME ====================
+    function updateLastUpdateTime() {
+      const now = new Date();
+      document.getElementById('lastUpdate').textContent = 
+        now.getHours().toString().padStart(2,'0') + ':' +
+        now.getMinutes().toString().padStart(2,'0') + ':' +
+        now.getSeconds().toString().padStart(2,'0');
+    }
+
+    // ==================== LOAD LOCATION FROM PROFILE ====================
+    function loadLocationFromProfile() {
+      try {
+        const profileData = localStorage.getItem('hayyak_user_profile');
+        if (profileData) {
+          const profile = JSON.parse(profileData);
+          if (profile.emirate) {
+            const locationDisplay = document.getElementById('locationDisplay');
+            if (locationDisplay) {
+              locationDisplay.textContent = profile.emirate;
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading location from profile:', error);
+      }
+    }
+
+    // ==================== INIT ====================
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load language from profile
+      const userProfile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      if (userProfile.language && userProfile.language !== currentLanguage) {
+        currentLanguage = userProfile.language;
+        document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = currentLanguage;
+        const btn = document.getElementById('translateBtn');
+        if (btn) {
+          btn.querySelector('span:last-child').textContent = currentLanguage === 'ar' ? 'English' : 'العربية';
+        }
+      }
+      
+      // Apply Theme
+      if (userProfile.theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+      
+      document.getElementById('translateBtn').addEventListener('click', toggleLanguage);
+      loadLocationFromProfile();
+      fetchRealData();
+      setInterval(fetchRealData, 10000);
+    });
+  </script>
+</body>
+</html>

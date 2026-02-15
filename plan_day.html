@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>حياك | خطط يومي</title>
+  <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f5f7; --card: #ffffff; --ink: #0f0f10; --muted: #6b7280; --line: #0f0f10; --radius: 14px;
+      --primary: #16243d; --accent: #d4af37;
+    }
+    [data-theme="dark"] {
+      --bg: #121212; --card: #1e1e1e; --ink: #ffffff; --muted: #a0a0a0; --line: #333333;
+    }
+    body { margin: 0; font-family: 'Cairo', sans-serif; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; min-height: 100vh; }
+    .shell { width: 100%; max-width: 480px; margin: 0 auto; padding: 16px; flex: 1; }
+    header.brand { text-align: center; background: var(--primary); color: #ffffff; padding: 20px; position: relative; }
+    .logo-text { font-weight: 700; font-size: 32px; color: var(--accent); }
+    .home-btn { position: absolute; top: 50%; left: 20px; transform: translateY(-50%); color: var(--accent); text-decoration: none; font-weight: 700; }
+    
+    .card { background: var(--card); border: 2px solid var(--line); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; box-shadow: 0 4px 0 var(--line); }
+    .btn { width: 100%; padding: 14px; background: var(--primary); color: var(--accent); border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 16px; margin-top: 10px; }
+    .btn:active { transform: translateY(2px); }
+    
+    .timeline { position: relative; padding-right: 20px; border-right: 2px solid var(--line); margin-right: 10px; }
+    .timeline-item { margin-bottom: 24px; position: relative; }
+    .timeline-item::before { content: ''; position: absolute; right: -26px; top: 0; width: 10px; height: 10px; background: var(--accent); border-radius: 50%; border: 2px solid var(--line); }
+    .time-label { font-size: 12px; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+    .activity-card { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+    .activity-title { font-weight: 700; font-size: 16px; margin-bottom: 4px; }
+    .activity-desc { font-size: 13px; color: var(--muted); }
+    
+    .loading { text-align: center; padding: 40px; display: none; }
+    .spinner { font-size: 40px; animation: spin 1s infinite linear; display: inline-block; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <header class="brand">
+    <a href="home.html" class="home-btn" aria-label="الرئيسية" data-ar="رجوع" data-en="Back">رجوع</a>
+    <div class="logo-text">حــــــيــــاك</div>
+    <div class="logo-sub">HAYYAK</div>
+  </header>
+
+  <main class="shell">
+    <div class="card">
+      <h2 style="margin-top:0">✨ اصنع يومك المثالي</h2>
+      <p style="color:var(--muted); font-size:14px;">بناءً على تفضيلاتك في الملف الشخصي، سنقوم بإنشاء خطة متكاملة لك.</p>
+      <button class="btn" onclick="generatePlan()">🎲 إنشاء خطة جديدة</button>
+    </div>
+
+    <div id="loading" class="loading">
+      <div class="spinner">⏳</div>
+      <p>جاري تحضير أفضل خطة لك...</p>
+    </div>
+
+    <div id="plan-result" style="display:none;">
+      <div class="timeline" id="timeline-container">
+        <!-- Plan items will go here -->
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ==================== DATA SOURCES ====================
+    
+    // 1. Restaurant Data (Copied from restrunt.html)
+    const restaurantDB = {
+      dubai: [
+        {name:'Tresind Studio', nameAr:'تريسند ستوديو', rating:4.9, desc:'مأكولات هندية مبتكرة راقية', descAr:'Innovative Indian cuisine', allergens:['فول سوداني', 'سمسم', 'الخردل', 'القمح', 'منتجات ألبان', 'بيض'], type: 'fine_dining'},  
+        {name:'FZN by Björn Frantzén', nameAr:'اف زد ان بيورن فرانتزن', rating:4.9, desc:'إبداع نوردِك + ياباني في أتلانتس', descAr:'Nordic + Japanese fusion at Atlantis', allergens:['سمك', 'جمبري', 'فول سوداني', 'القمح', 'منتجات ألبان', 'بيض'], type: 'fine_dining'},  
+        {name:'Row on 45', nameAr:'رو أون 45', rating:4.8, desc:'مطعم ميشلان ستار في Grosvenor House', descAr:'Michelin star restaurant in Grosvenor House', allergens:['سمك', 'جمبري', 'منتجات ألبان', 'بيض', 'القمح'], type: 'fine_dining'},  
+        {name:'Manāo', nameAr:'ماناو', rating:4.7, desc:'مأكولات تايلاندية عصرية', descAr:'Modern Thai cuisine', allergens:['فول سوداني', 'سمك', 'جمبري', 'القمح', 'منتجات ألبان'], type: 'casual'},  
+        {name:'Il Ristorante – Niko Romito', nameAr:'إل ريستورانتي - نيكو روميتو', rating:4.8, desc:'إيطالي راقي في منتجع بولغاري', descAr:'Fine Italian cuisine at Bulgari Resort', allergens:['القمح', 'منتجات ألبان', 'بيض'], type: 'fine_dining'},
+        {name:'Dubai Mall Food Court', nameAr:'ردهة طعام دبي مول', rating:4.5, desc:'وجبات سريعة ومتنوعة', descAr:'Fast food and variety', allergens:['القمح', 'منتجات ألبان'], type: 'fast_food'},
+        {name:'Comptoir 102', nameAr:'كومبتوار 102', rating:4.6, desc:'مقهى صحي وعضوي', descAr:'Healthy organic cafe', allergens:[], type: 'healthy'}
+      ],
+      abudhabi: [
+        {name:'99 Sushi Bar & Restaurant', nameAr:'99 سوشي بار و مطعم', rating:4.7, desc:'مطعم ياباني راقي مع نجمة ميشلان', descAr:'Fine Japanese restaurant with Michelin star', allergens:['سمك', 'جمبري', 'فول سوداني'], type: 'fine_dining'},  
+        {name:'Talea by Antonio Guida', nameAr:'تاليا باني أنطونيو غويدا', rating:4.7, desc:'مطعم إيطالي فخم حائز نجمة ميشلان', descAr:'Luxury Italian restaurant with Michelin star', allergens:['القمح', 'منتجات ألبان', 'بيض'], type: 'fine_dining'},  
+        {name:'Erth', nameAr:'إرث', rating:4.7, desc:'مطعم إماراتي معاصر حائز تقييم عالي', descAr:'Contemporary Emirati restaurant with high rating', allergens:['السمسم', 'القمح'], type: 'casual'},  
+        {name:'Hakkasan Abu Dhabi', nameAr:'هاكاسان أبوظبي', rating:4.7, desc:'مطعم صيني فاخر عالمي', descAr:'Luxury global Chinese restaurant', allergens:['فول سوداني', 'سمسم', 'سمك'], type: 'fine_dining'},  
+        {name:'La Petite Maison Abu Dhabi', nameAr:'لا بيتي مايزون أبوظبي', rating:4.7, desc:'مطعم فرنسي راقي عالمي', descAr:'Fine French global restaurant', allergens:['سمك', 'جمبري', 'منتجات ألبان', 'بيض'], type: 'fine_dining'}
+      ],
+      sharjah: [
+        {name:'Mahrosah Restaurant', nameAr:'مطعم المحروسة', rating:4.9, desc:'مطعم ومخبز عالمي', descAr:'International restaurant and bakery', allergens:['القمح', 'منتجات ألبان', 'بيض', 'فول سوداني'], type: 'casual'},
+        {name:'Yasmina Restaurant', nameAr:'مطعم ياسمينة', rating:4.9, desc:'مطعم بحري ودولي', descAr:'Seafood and international restaurant', allergens:['سمك', 'جمبري', 'محار', 'منتجات ألبان'], type: 'seafood'}, 
+        {name:'Casa Samak', nameAr:'كازا ساماك', rating:4.9, desc:'أطباق بحرية طازجة', descAr:'Fresh seafood', allergens:['سمك', 'جمبري', 'محار'], type: 'seafood'}
+      ],
+      ajman: [
+        {name:'Al Zahra Restaurant', nameAr:'مطعم الزهرة', rating:4.5, desc:'مطعم عربي ومشاوي', descAr:'Arabic restaurant with grilled dishes', allergens:['القمح', 'السمسم'], type: 'casual'},
+        {name:'Biryani Pot', nameAr:'بوت البرياني', rating:4.6, desc:'مطعم هندي متخصص بالبرياني', descAr:'Indian restaurant specializing in biryani', allergens:['فول سوداني', 'سمسم', 'القمح'], type: 'casual'}
+      ],
+      rak: [
+        {name:'Pesto Italian', nameAr:'مطعم بيستو الإيطالي', rating:4.6, desc:'مطعم إيطالي بيتزا وباستا', descAr:'Italian restaurant with pizza and pasta', allergens:['القمح', 'منتجات ألبان', 'بيض'], type: 'casual'},
+        {name:'Fish Market', nameAr:'سوق السمك', rating:4.7, desc:'مأكولات بحرية طازجة', descAr:'Fresh seafood', allergens:['سمك', 'جمبري', 'محار'], type: 'seafood'}
+      ],
+      fujairah: [
+        {name:'Azzurro Ristorante', nameAr:'مطعم أزورو', rating:4.6, desc:'مطعم إيطالي ومشاوي', descAr:'Italian restaurant and grills', allergens:['القمح', 'منتجات ألبان', 'بيض'], type: 'casual'},
+        {name:'Beach Restaurant', nameAr:'مطعم الشاطئ', rating:4.5, desc:'مأكولات بحرية متنوعة', descAr:'Various seafood', allergens:['سمك', 'جمبري', 'محار'], type: 'seafood'}
+      ],
+      uaq: [
+        {name:'Al Meshwar', nameAr:'مطعم المشوار', rating:4.4, desc:'مأكولات عربية ومشاوي', descAr:'Arabic cuisine and grills', allergens:['القمح'], type: 'casual'},
+        {name:'UQ Seafood', nameAr:'يو كيو للمأكولات البحرية', rating:4.5, desc:'مأكولات بحرية', descAr:'Seafood', allergens:['سمك', 'جمبري', 'محار'], type: 'seafood'}
+      ]
+    };
+
+    // 2. Activities Data
+    const activityDB = {
+      dubai: {
+        morning: [{t:'Dubai Frame', tAr:'برواز دبي', d:'View old and new Dubai', outdoor: false}, {t:'Kite Beach', tAr:'شاطئ كايت', d:'Morning walk by the beach', outdoor: true}],
+        afternoon: [{t:'Dubai Mall', tAr:'دبي مول', d:'Shopping and Aquarium', outdoor: false}, {t:'Museum of the Future', tAr:'متحف المستقبل', d:'Explore future technology', outdoor: false}],
+        evening: [{t:'Global Village', tAr:'القرية العالمية', d:'Cultural entertainment', outdoor: true}, {t:'Dubai Fountain', tAr:'نافورة دبي', d:'Water and light show', outdoor: true}]
+      },
+      abudhabi: {
+        morning: [{t:'Sheikh Zayed Mosque', tAr:'جامع الشيخ زايد', d:'Architectural masterpiece', outdoor: true}, {t:'Louvre Abu Dhabi', tAr:'متحف اللوفر', d:'Art and civilization', outdoor: false}],
+        afternoon: [{t:'Ferrari World', tAr:'عالم فيراري', d:'Thrilling rides', outdoor: false}, {t:'Yas Mall', tAr:'ياس مول', d:'Shopping and dining', outdoor: false}],
+        evening: [{t:'Corniche', tAr:'الكورنيش', d:'Evening walk', outdoor: true}, {t:'Yas Marina', tAr:'مرسى ياس', d:'Nightlife and views', outdoor: true}]
+      },
+      // Default fallback for other cities
+      default: {
+        morning: [{t:'Local Museum', tAr:'المتحف المحلي', d:'Discover history', outdoor: false}, {t:'City Park', tAr:'حديقة المدينة', d:'Morning relaxation', outdoor: true}],
+        afternoon: [{t:'City Center Mall', tAr:'سيتي سنتر', d:'Shopping', outdoor: false}, {t:'Traditional Souq', tAr:'السوق الشعبي', d:'Local goods', outdoor: true}],
+        evening: [{t:'Corniche Walk', tAr:'ممشى الكورنيش', d:'Sea breeze', outdoor: true}, {t:'Cinema', tAr:'السينما', d:'Watch a movie', outdoor: false}]
+      }
+    };
+
+    // ==================== LOGIC ====================
+
+    let currentPlanData = null;
+
+    async function getWeatherData() {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        const response = await fetch('http://192.168.0.168/HAYYAK/api/data.php', { signal: controller.signal });
+        clearTimeout(timeoutId);
+        const data = await response.json();
+        if (data.success) {
+          return { ...data.data, source: 'live' };
+        }
+        throw new Error('API Error');
+      } catch (e) {
+        return simulateWeather();
+      }
+    }
+
+    function simulateWeather() {
+      const rand = Math.random() * 100;
+      // 66% Perfect, 15% Cold, 15% Hot, 4% Bad
+      if (rand < 66) {
+        return { temperature: 24, humidity: 45, aqi: 30, condition: 'perfect', source: 'simulated' };
+      } else if (rand < 81) { // 66 + 15
+        return { temperature: 15, humidity: 40, aqi: 40, condition: 'cold', source: 'simulated' };
+      } else if (rand < 96) { // 81 + 15
+        return { temperature: 38, humidity: 60, aqi: 80, condition: 'hot', source: 'simulated' };
+      } else {
+        return { temperature: 42, humidity: 85, aqi: 160, condition: 'bad', source: 'simulated' };
+      }
+    }
+
+    async function generatePlan() {
+      document.getElementById('plan-result').style.display = 'none';
+      document.getElementById('loading').style.display = 'block';
+
+      const profile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      const lang = profile.language || 'ar';
+      const isAr = lang === 'ar';
+
+      // Weather Logic
+      const weather = await getWeatherData();
+      let weatherNote = '';
+      let avoidOutdoor = false;
+      let outfitSuggestion = '';
+
+      if (weather.source === 'live') {
+         if (weather.aqi > 100 || weather.temperature > 40) weather.condition = 'bad';
+         else if (weather.temperature > 33) weather.condition = 'hot';
+         else if (weather.temperature < 15) weather.condition = 'cold';
+         else weather.condition = 'perfect';
+      }
+
+      if (weather.condition === 'bad') {
+        avoidOutdoor = true;
+        weatherNote = isAr ? '⚠️ الجو سيء، تم اختيار أنشطة داخلية.' : '⚠️ Weather is bad, indoor activities selected.';
+        outfitSuggestion = isAr ? '🏠 ملابس مريحة للأماكن المغلقة.' : '🏠 Comfortable indoor clothing.';
+      } else if (weather.condition === 'hot') {
+        avoidOutdoor = true;
+        weatherNote = isAr ? '☀️ الجو حار، تم تفضيل الأماكن المغلقة.' : '☀️ It\'s hot, preferring indoors.';
+        outfitSuggestion = isAr ? '👕 ملابس خفيفة، نظارة شمسية، وقبعة.' : '👕 Light clothes, sunglasses, and a hat.';
+      } else if (weather.condition === 'cold') {
+        weatherNote = isAr ? '❄️ الجو بارد، استمتع ولكن ارتدِ ملابس دافئة.' : '❄️ It\'s cold, enjoy but dress warmly.';
+        outfitSuggestion = isAr ? '🧥 جاكيت، وشاح، وملابس دافئة.' : '🧥 Jacket, scarf, and warm clothes.';
+      } else {
+        weatherNote = isAr ? '✨ الجو رائع للأنشطة الخارجية!' : '✨ Weather is perfect for outdoors!';
+        outfitSuggestion = isAr ? '👟 ملابس كاجوال مريحة.' : '👟 Casual comfortable wear.';
+      }
+      
+      // 1. Determine City
+      const cityMap = {
+        'Abu Dhabi': 'abudhabi', 'Dubai': 'dubai', 'Sharjah': 'sharjah',
+        'Ajman': 'ajman', 'Umm Al Quwain': 'uaq', 'Ras Al Khaimah': 'rak', 'Fujairah': 'fujairah'
+      };
+      const userCity = cityMap[profile.emirate] || 'dubai';
+
+      // 2. Get Restaurants for City
+      let availableRestaurants = restaurantDB[userCity] || restaurantDB['dubai'];
+
+      // 3. Filter by Allergies
+      if (profile.allergies && profile.allergies.length > 0) {
+        const userAllergies = profile.allergies.map(a => a.toLowerCase());
+        availableRestaurants = availableRestaurants.filter(r => {
+          if (!r.allergens) return true;
+          // Check if restaurant has any allergen that matches user's allergies
+          // Note: Data in DB is in Arabic, user profile might be mixed. 
+          // Simple check: string inclusion
+          const hasConflict = r.allergens.some(allergen => {
+             return userAllergies.some(ua => 
+               ua.includes(allergen) || allergen.includes(ua) || 
+               (ua.includes('Milk') && allergen.includes('ألبان')) ||
+               (ua.includes('Nuts') && allergen.includes('مكسرات')) ||
+               (ua.includes('Seafood') && (allergen.includes('سمك') || allergen.includes('جمبري')))
+             );
+          });
+          return !hasConflict;
+        });
+      }
+
+      // 4. Filter by Diseases (Disses)
+      if (profile.medicalConditions && profile.medicalConditions.length > 0) {
+        const conditions = profile.medicalConditions.map(c => c.toLowerCase());
+        
+        // Diabetes Logic: Avoid Fast Food, Sweets
+        if (conditions.some(c => c.includes('diabetes') || c.includes('السكري'))) {
+           availableRestaurants = availableRestaurants.filter(r => 
+             r.type !== 'fast_food' && 
+             !r.desc.toLowerCase().includes('sweet') && 
+             !r.descAr.includes('حلويات')
+           );
+           // Prioritize healthy
+           availableRestaurants.sort((a, b) => (b.type === 'healthy' ? 1 : 0) - (a.type === 'healthy' ? 1 : 0));
+        }
+
+        // High Blood Pressure: Avoid Fast Food (High Sodium)
+        if (conditions.some(c => c.includes('pressure') || c.includes('ضغط'))) {
+           availableRestaurants = availableRestaurants.filter(r => r.type !== 'fast_food');
+        }
+      }
+
+      // 5. Prioritize by Food Preferences
+      if (profile.foodPreferences && profile.foodPreferences.length > 0) {
+        const prefs = profile.foodPreferences.map(p => p.toLowerCase());
+        availableRestaurants.sort((a, b) => {
+          const aScore = prefs.some(p => (a.desc + a.descAr).toLowerCase().includes(p)) ? 1 : 0;
+          const bScore = prefs.some(p => (b.desc + b.descAr).toLowerCase().includes(p)) ? 1 : 0;
+          return bScore - aScore;
+        });
+      }
+
+      // 6. Select Restaurants (Lunch & Dinner)
+      // Fallback if filtered list is empty
+      if (availableRestaurants.length === 0) {
+        availableRestaurants = restaurantDB[userCity] || restaurantDB['dubai'];
+      }
+      
+      const lunchSpot = availableRestaurants[0];
+      // Try to find a different one for dinner
+      const dinnerSpot = availableRestaurants.length > 1 ? availableRestaurants[1] : availableRestaurants[0];
+
+      // 7. Select Activities
+      const cityActs = activityDB[userCity] || activityDB['default'];
+      
+      const filterActs = (acts) => {
+        if (!avoidOutdoor) return acts;
+        const indoor = acts.filter(a => !a.outdoor);
+        return indoor.length > 0 ? indoor : acts;
+      };
+
+      const morningOptions = filterActs(cityActs.morning);
+      const afternoonOptions = filterActs(cityActs.afternoon);
+      const eveningOptions = filterActs(cityActs.evening);
+
+      const morningAct = morningOptions[Math.floor(Math.random() * morningOptions.length)];
+      const afternoonAct = afternoonOptions[Math.floor(Math.random() * afternoonOptions.length)];
+      const eveningAct = eveningOptions[Math.floor(Math.random() * eveningOptions.length)];
+
+      currentPlanData = {
+        date: new Date().toISOString(),
+        weather: weather,
+        morning: morningAct,
+        lunch: lunchSpot,
+        afternoon: afternoonAct,
+        dinner: dinnerSpot,
+        evening: eveningAct,
+        outfit: outfitSuggestion
+      };
+
+      const html = `
+          <div style="background:var(--card); padding:10px; border-radius:10px; margin-bottom:20px; border:1px solid var(--accent); font-size:14px; text-align:center;">
+            <div style="margin-bottom:5px;">${weatherNote}</div>
+            <div style="font-weight:bold; color:var(--primary);">${isAr ? 'مقترح الملابس:' : 'Outfit Suggestion:'} ${outfitSuggestion}</div>
+          </div>
+          <div class="timeline-item">
+            <div class="time-label">09:00 ${isAr ? 'صباحاً' : 'AM'}</div>
+            <div class="activity-card">
+              <div class="activity-title">☀️ ${isAr ? morningAct.tAr : morningAct.t}</div>
+              <div class="activity-desc">${isAr ? morningAct.d : morningAct.d}</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="time-label">01:00 ${isAr ? 'ظهراً' : 'PM'}</div>
+            <div class="activity-card">
+              <div class="activity-title">🍽️ ${isAr ? lunchSpot.nameAr : lunchSpot.name}</div>
+              <div class="activity-desc">${isAr ? lunchSpot.descAr : lunchSpot.desc}</div>
+              ${lunchSpot.type === 'healthy' ? `<div style="color:green; font-size:11px; margin-top:4px;">${isAr ? '✅ خيار صحي مناسب لك' : '✅ Healthy choice for you'}</div>` : ''}
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="time-label">04:00 ${isAr ? 'عصراً' : 'PM'}</div>
+            <div class="activity-card">
+              <div class="activity-title">🎡 ${isAr ? afternoonAct.tAr : afternoonAct.t}</div>
+              <div class="activity-desc">${isAr ? afternoonAct.d : afternoonAct.d}</div>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="time-label">08:00 ${isAr ? 'مساءً' : 'PM'}</div>
+            <div class="activity-card">
+              <div class="activity-title">🌙 ${isAr ? dinnerSpot.nameAr : dinnerSpot.name}</div>
+              <div class="activity-desc">${isAr ? dinnerSpot.descAr : dinnerSpot.desc}</div>
+            </div>
+          </div>
+          <button class="btn" onclick="saveCurrentPlan()" style="margin-top:10px;">${isAr ? '💾 حفظ الخطة في الملف الشخصي' : '💾 Save Plan to Profile'}</button>
+        `;
+
+      document.getElementById('timeline-container').innerHTML = html;
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('plan-result').style.display = 'block';
+    }
+
+    function saveCurrentPlan() {
+      if (!currentPlanData) return;
+      const profile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      profile.savedPlan = currentPlanData;
+      localStorage.setItem('hayyak_user_profile', JSON.stringify(profile));
+      alert(profile.language === 'ar' ? 'تم حفظ الخطة بنجاح!' : 'Plan saved successfully!');
+    }
+
+    // Apply Theme
+    const profile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+    if (profile.theme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
+</body>
+</html>

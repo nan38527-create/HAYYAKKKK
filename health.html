@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>حياك | صحة</title>
+  <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+  <!-- Google Fonts: Cairo -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* Afeesh family (local) */
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Aadi.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Aadi.woff') format('woff'),
+           url('./afeesh/Afeesh-Aadi.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Mekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Mekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-Mekalbaz.ttf') format('truetype');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-NosMekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-NosMekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-NosMekalbaz.ttf') format('truetype');
+      font-weight: 600; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-NosMesalwa.woff2') format('woff2'),
+           url('./afeesh/Afeesh-NosMesalwa.woff') format('woff'),
+           url('./afeesh/Afeesh-NosMesalwa.ttf') format('truetype');
+      font-weight: 300; font-style: normal; font-display: swap;
+    }
+
+    :root {
+      --bg: #f5f5f7; --card: #ffffff; --ink: #0f0f10; --muted: #6b7280; --line: #0f0f10; --radius: 14px;
+    }
+    [data-theme="dark"] {
+      --bg: #121212; --card: #1e1e1e; --ink: #ffffff; --muted: #a0a0a0; --line: #333333;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; background:var(--bg)}
+    body{margin:0; font-family:'Cairo', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:var(--ink)}
+
+    .shell{width:100%; max-width:420px; margin:0 auto; padding:16px}
+    .card{background:var(--card); border:2px solid var(--line); border-radius:var(--radius); box-shadow:0 2px 0 #0f0f10}
+
+    header.brand{text-align:center; background:#16243d; color:#ffffff; padding:20px; position:relative}
+    .logo-text {
+      font-family: 'Afeesh', sans-serif;
+      font-weight: 700;
+      font-size: 48px;
+      letter-spacing: 2px;
+      color: #d4af37;
+    }
+    .logo-sub {
+      font-family: 'Afeesh', sans-serif;
+      font-weight: 600;
+      color: #94a3b8;
+      font-size: 20px;
+      margin-top: 2px;
+      letter-spacing: 3px;
+    }
+    .home-btn {
+      position: absolute;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%);
+      color: #d4af37;
+      text-decoration: none;
+      font-size: 15px;
+      background-color: #0f0f10;
+      padding: 9px 12px;
+      border-radius: 999px;
+    }
+
+    /* Translate Button Styles */
+    .translate-btn {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      background: #d4af37;
+      border: 2px solid #ffffff;
+      border-radius: 20px;
+      color: #16243d;
+      padding: 6px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+      z-index: 100;
+    }
+    
+    .translate-btn:hover {
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.5);
+      background: #f7ef8a;
+    }
+    
+    .translate-btn .icon {
+      font-size: 16px;
+      transition: transform 0.3s ease;
+    }
+    
+    .translate-btn:hover .icon {
+      transform: rotate(20deg);
+    }
+    
+    .translate-btn.switching {
+      animation: pulse 0.5s ease;
+    }
+    
+    @keyframes pulse {
+      0% { transform: translateY(-50%) scale(1); }
+      50% { transform: translateY(-50%) scale(0.9); }
+      100% { transform: translateY(-50%) scale(1); }
+    }
+
+    .map{height:180px; border-radius:var(--radius); overflow:hidden; position:relative; border:2px solid var(--line)}
+    .map iframe{width:100%; height:100%; border:0}
+
+    .section-title{display:flex; align-items:center; justify-content:center; gap:10px; margin:14px 0 10px; font-weight:700; font-size:20px}
+    .section-title .emoji{font-size:22px}
+
+    /* List items */
+    .list{display:grid; gap:10px}
+    .item{display:flex; align-items:center; gap:10px; border:2px solid var(--line); border-radius:999px; background:var(--card); padding:8px 16px 8px 12px; cursor:pointer; transition:background 0.2s}
+    .item:hover{background:#f5f5f7}
+    .pin{display:grid; place-items:center; font-size:22px; width:36px; flex-shrink:0}
+    .thumb{width:60px; height:50px; border-radius:8px; object-fit:cover; flex-shrink:0}
+    .label{flex:1}
+    .label span{display:block; font-weight:700; font-size:13px}
+    .distance-badge{font-size:11px; color:#6b7280; font-weight:600}
+    .rating-badge{font-size:11px; color:#d97706; font-weight:600}
+    .type-badge{font-size:10px; background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:4px; margin-right:4px;}
+
+    .info-panel{display:none; margin-top:10px; padding:14px; animation:fade 0.4s}
+    .info-panel.active{display:block}
+    .info-panel h3{margin:0 0 8px; font-size:18px}
+    .info-desc{font-size:14px; line-height:1.6; color:#6b7280; margin-bottom:16px}
+    
+    .info-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+    .info-box{background:#f5f5f7; padding:12px; border-radius:12px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:4px}
+    .ib-icon{font-size:24px}
+    .ib-label{font-size:12px; color:#6b7280; font-weight:600}
+    .ib-val{font-size:14px; font-weight:700}
+    @keyframes fade{from{opacity:0; transform:translateY(-10px)}to{opacity:1; transform:translateY(0)}}
+
+    .controls{display:grid; gap:10px; margin-bottom:16px}
+    .filter-group{display:grid; gap:8px}
+    .filter-label{font-weight:600; font-size:14px; color:var(--ink)}
+    .city-select{padding:10px 12px; border:2px solid var(--line); border-radius:999px; background:var(--card); color:var(--ink); font-family:inherit; cursor:pointer; font-weight:600; font-size:13px; width:100%}
+    .sort-buttons{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px}
+    .sort-btn{padding:10px 12px; border:2px solid var(--line); border-radius:999px; background:var(--card); color:var(--ink); font-family:inherit; cursor:pointer; font-weight:600; font-size:13px}
+    .sort-btn.active{background:#0f0f10; color:#ffffff}
+
+    .bottom-search{padding:12px 0 18px; position:relative}
+    .search{display:grid; grid-template-columns:28px 1fr; align-items:center; gap:8px; border:2px solid var(--line); border-radius:999px; padding:10px 12px; background:var(--card)}
+    .glass{text-align:center}
+    .search input{appearance:none; border:0; outline:0; background:transparent; width:100%; font:inherit; color:var(--ink)}
+    .search input::placeholder{color:var(--muted)}
+
+    .autocomplete-list{display:none; position:absolute; top:100%; left:0; right:0; background:var(--card); border:2px solid var(--line); border-top:0; border-radius:0 0 var(--radius) var(--radius); max-height:200px; overflow-y:auto; z-index:100}
+    .autocomplete-list.active{display:block}
+    .autocomplete-item{padding:12px; border-bottom:1px solid var(--line); cursor:pointer; transition:background 0.2s}
+    .autocomplete-item:hover{background:#f5f5f7}
+    .autocomplete-item:last-child{border-bottom:none}
+    .autocomplete-item-name{font-weight:700; color:var(--ink)}
+    .autocomplete-item-desc{font-size:12px; color:var(--muted); margin-top:2px}
+
+    footer {
+      background: #16243d;
+      color: #ffffff;
+      text-align: center;
+      font-size: 14px;
+      padding: 20px;
+      margin-top: 20px;
+    }
+
+    .error-toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: #ef4444;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 999px;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+    .error-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (min-width:768px){.shell{padding:24px} .map{height:220px}}
+  </style>
+</head>
+<body>
+  <header class="brand">
+    <a href="home.html" class="home-btn" aria-label="الرئيسية" data-ar="رجوع" data-en="Back">رجوع</a>
+    <div class="logo-text">حــــــيــــاك</div>
+    <div class="logo-sub">HAYYAK</div>
+    <button class="translate-btn" id="translateBtn" aria-label="تبديل اللغة">
+      <span class="icon">🌐</span>
+      <span>English</span>
+    </button>
+  </header>
+  <div id="error-toast" class="error-toast"></div>
+  <main class="shell">
+    <div class="map card" aria-label="خريطة" data-ar-label="خريطة" data-en-label="Map">
+      <iframe src="https://www.openstreetmap.org/export/embed.html?bbox=51.50,22.50,56.50,26.20&amp;layer=mapnik" title="Map"></iframe>
+    </div>
+
+    <div id="info-panel" class="card info-panel">
+      <h3 id="p-title" style="margin:0 0 8px"></h3>
+      <div id="p-desc" class="info-desc"></div>
+      
+      <div class="info-grid">
+        <div class="info-box">
+          <div class="ib-icon">⭐</div>
+          <div class="ib-label" data-ar="التقييم" data-en="Rating">التقييم</div>
+          <div class="ib-val" id="p-rating"></div>
+        </div>
+        <div class="info-box">
+          <div class="ib-icon">📏</div>
+          <div class="ib-label" data-ar="المسافة" data-en="Distance">المسافة</div>
+          <div class="ib-val" id="p-distance"></div>
+        </div>
+        <div class="info-box">
+          <div class="ib-icon">🕒</div>
+          <div class="ib-label" data-ar="الأوقات" data-en="Hours">الأوقات</div>
+          <div class="ib-val" id="p-time"></div>
+        </div>
+        <div class="info-box">
+          <div class="ib-icon">🏥</div>
+          <div class="ib-label" data-ar="النوع" data-en="Type">النوع</div>
+          <div class="ib-val" id="p-type"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title"><span class="emoji" aria-hidden="true">🏥</span><span data-ar="صحة" data-en="Health">صحة</span></div>
+
+    <div class="controls card">
+      <div class="filter-group">
+        <label class="filter-label" data-ar="اختر المدينة:" data-en="Choose City:">اختر المدينة:</label>
+        <select id="city-select" class="city-select" onchange="changeCity(this.value)">
+          <option value="dubai">🏙️ <span data-ar="دبي" data-en="Dubai">دبي</span></option>
+          <option value="abudhabi">🏛️ <span data-ar="أبوظبي" data-en="Abu Dhabi">أبوظبي</span></option>
+          <option value="sharjah">🏘️ <span data-ar="الشارقة" data-en="Sharjah">الشارقة</span></option>
+          <option value="ajman">🌊 <span data-ar="عجمان" data-en="Ajman">عجمان</span></option>
+          <option value="rak">⛰️ <span data-ar="رأس الخيمة" data-en="Ras Al Khaimah">رأس الخيمة</span></option>
+          <option value="fujairah">🏖️ <span data-ar="الفجيرة" data-en="Fujairah">الفجيرة</span></option>
+          <option value="uaq">🦅 <span data-ar="أم القيوين" data-en="Umm Al Quwain">أم القيوين</span></option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label" data-ar="النوع:" data-en="Type:">النوع:</label>
+        <select id="type-select" class="city-select" onchange="changeType(this.value)">
+          <option value="" data-ar="الكل" data-en="All">الكل</option>
+          <option value="hospital" data-ar="مستشفيات" data-en="Hospitals">مستشفيات</option>
+          <option value="gym" data-ar="نوادي رياضية" data-en="Gyms">نوادي رياضية</option>
+          <option value="pharmacy" data-ar="صيدليات" data-en="Pharmacies">صيدليات</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label class="filter-label" data-ar="رتّب حسب:" data-en="Sort by:">رتّب حسب:</label>
+        <div class="sort-buttons">
+          <button class="sort-btn active" onclick="sortPlaces('nearest', event)" data-ar="📍 الأقرب" data-en="📍 Nearest">📍 الأقرب</button>
+          <button class="sort-btn" onclick="sortPlaces('rating', event)" data-ar="⭐ الأعلى" data-en="⭐ Highest">⭐ الأعلى</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="list" id="places-list"></section>
+
+    <div class="bottom-search">
+      <div class="search">
+        <div class="glass">🔍</div>
+        <input type="search" id="search-input" 
+               placeholder="ابحث عن مستشفى، نادي، صيدلية..." 
+               data-ar-placeholder="ابحث عن مستشفى، نادي، صيدلية..." 
+               data-en-placeholder="Search for hospital, gym, pharmacy..." 
+               aria-label="ابحث عن مكان صحي" />
+      </div>
+      <div id="autocomplete-list" class="autocomplete-list"></div>
+    </div>
+  </main>
+  <footer data-ar="© عبدالله بن ناصر - حياك" data-en="© Abdullah bin Nasser - Hayyak">© عبدالله بن ناصر - حياك</footer>
+
+  <script>
+    // Language state
+    let currentLanguage = 'ar';
+    let currentCity = 'dubai';
+    let currentSort = 'nearest';
+    let currentType = '';
+    let filteredPlaces = [];
+    let userLocation = {lat: 25.2048, lon: 55.2708};
+
+    // Translation function
+    function toggleLanguage() {
+      const btn = document.getElementById('translateBtn');
+      btn.classList.add('switching');
+      
+      // Switch language
+      currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+      
+      // Update button text
+      const langText = btn.querySelector('span:last-child');
+      langText.textContent = currentLanguage === 'ar' ? 'English' : 'العربية';
+      
+      // Update page direction
+      document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+      document.documentElement.lang = currentLanguage;
+      
+      // Update page title
+      document.title = currentLanguage === 'ar' ? 'حياك | صحة' : 'Hayyak | Health';
+      
+      // Save language preference
+      const profile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      profile.language = currentLanguage;
+      localStorage.setItem('hayyak_user_profile', JSON.stringify(profile));
+      
+      // Translate all content
+      translateAllContent();
+      
+      // Re-filter and render places with new language
+      filterAndSort();
+      
+      // Show notification
+      showError(currentLanguage === 'ar' ? 'تم التبديل إلى العربية' : 'Switched to English');
+      
+      // Remove animation class
+      setTimeout(() => {
+        btn.classList.remove('switching');
+      }, 500);
+    }
+    
+    // Translate all content including header and footer
+    function translateAllContent() {
+      document.querySelectorAll('[data-ar], [data-en]').forEach(element => {
+        if (element.hasAttribute('data-ar') && element.hasAttribute('data-en')) {
+          element.textContent = currentLanguage === 'ar' ? element.getAttribute('data-ar') : element.getAttribute('data-en');
+        }
+      });
+      
+      document.querySelectorAll('[data-ar-placeholder], [data-en-placeholder]').forEach(element => {
+        if (element.hasAttribute('data-ar-placeholder') && element.hasAttribute('data-en-placeholder')) {
+          element.placeholder = currentLanguage === 'ar' ? element.getAttribute('data-ar-placeholder') : element.getAttribute('data-en-placeholder');
+        }
+      });
+      
+      const homeBtn = document.querySelector('.home-btn');
+      if (homeBtn) {
+        homeBtn.setAttribute('aria-label', currentLanguage === 'ar' ? 'الرئيسية' : 'Home');
+      }
+      
+      const translateBtn = document.getElementById('translateBtn');
+      if (translateBtn) {
+        translateBtn.setAttribute('aria-label', currentLanguage === 'ar' ? 'تبديل اللغة' : 'Toggle Language');
+      }
+      
+      const searchInput = document.getElementById('search-input');
+      if (searchInput) {
+        searchInput.setAttribute('aria-label', currentLanguage === 'ar' ? 'ابحث عن مكان صحي' : 'Search for health place');
+      }
+      
+      const map = document.querySelector('.map');
+      if (map) {
+        map.setAttribute('aria-label', currentLanguage === 'ar' ? 'خريطة' : 'Map');
+      }
+      
+      // Translate select options
+      document.querySelectorAll('select option').forEach(option => {
+        if (option.hasAttribute('data-ar') && option.hasAttribute('data-en')) {
+          option.textContent = currentLanguage === 'ar' ? option.getAttribute('data-ar') : option.getAttribute('data-en');
+        }
+      });
+    }
+
+    // Health Places Database
+    const allPlaces = {
+      dubai: [
+        {city:'dubai', name:'Al Jalila Children’s Specialty Hospital', nameAr:'مستشفى الجليلة التخصصي للأطفال', lat:25.2330, lon:55.3240, rating:4.7, type:'hospital', time:'24/7', desc:'مستشفى تخصصي للأطفال', descAr:'Children specialty hospital'},
+        {city:'dubai', name:'Zulekha Hospital Dubai', nameAr:'مستشفى زليخة دبي', lat:25.2490, lon:55.3320, rating:4.4, type:'hospital', time:'24/7', desc:'رعاية صحية متكاملة', descAr:'Integrated healthcare'},
+        {city:'dubai', name:'Aster Hospital Mankhool', nameAr:'مستشفى أستر المنخول', lat:25.2565, lon:55.2910, rating:4.3, type:'hospital', time:'24/7', desc:'مستشفى خاص متعدد التخصصات', descAr:'Private multi-specialty hospital'},
+        {city:'dubai', name:'Prime Hospital', nameAr:'مستشفى برايم', lat:25.2590, lon:55.3270, rating:4.5, type:'hospital', time:'24/7', desc:'خدمات طبية عالية الجودة', descAr:'High-quality medical services'},
+        {city:'dubai', name:'Emirates Hospital Jumeirah', nameAr:'مستشفى الإمارات جميرا', lat:25.2155, lon:55.2530, rating:4.6, type:'hospital', time:'24/7', desc:'رعاية طبية متقدمة', descAr:'Advanced medical care'},
+        {city:'dubai', name:'Medcare Hospital Al Safa', nameAr:'مستشفى ميدكير الصفا', lat:25.2040, lon:55.2605, rating:4.5, type:'hospital', time:'24/7', desc:'مستشفى حديث متعدد التخصصات', descAr:'Modern multi-specialty hospital'},
+        {city:'dubai', name:'NMC Royal Hospital DIP', nameAr:'مستشفى إن إم سي رويال - مجمع دبي للاستثمار', lat:24.9970, lon:55.1600, rating:4.4, type:'hospital', time:'24/7', desc:'مستشفى شامل', descAr:'Comprehensive hospital'},
+        {city:'dubai', name:'Fakeeh University Hospital', nameAr:'مستشفى فقيه الجامعي', lat:25.0190, lon:55.1800, rating:4.6, type:'hospital', time:'24/7', desc:'مستشفى جامعي متطور', descAr:'Advanced university hospital'},
+        {city:'dubai', name:'Canadian Specialist Hospital', nameAr:'المستشفى الكندي التخصصي', lat:25.2700, lon:55.3280, rating:4.3, type:'hospital', time:'24/7', desc:'مستشفى تخصصي كبير', descAr:'Large specialist hospital'},
+        {city:'dubai', name:'Al Zahra Hospital Dubai', nameAr:'مستشفى الزهراء دبي', lat:25.1185, lon:55.2005, rating:4.6, type:'hospital', time:'24/7', desc:'مستشفى خاص متقدم', descAr:'Advanced private hospital'},
+        {city:'dubai', name:'Mediclinic Parkview Hospital', nameAr:'مستشفى ميديكلينيك باركفيو', lat:25.0475, lon:55.2370, rating:4.7, type:'hospital', time:'24/7', desc:'رعاية صحية متميزة', descAr:'Premium healthcare'},
+
+        {city:'dubai', name:'Warehouse Gym', nameAr:'ويرهاوس جيم', lat:25.2045, lon:55.2700, rating:4.6, type:'gym', time:'6:00 ص - 10:00 م', desc:'نادي لياقة حديث', descAr:'Modern fitness gym'},
+        {city:'dubai', name:'GymNation Al Quoz', nameAr:'جيم نيشن - القوز', lat:25.1310, lon:55.2380, rating:4.5, type:'gym', time:'24/7', desc:'نادي رياضي اقتصادي', descAr:'Affordable gym'},
+        {city:'dubai', name:'Fitness Time', nameAr:'فيتنس تايم', lat:25.2210, lon:55.2860, rating:4.4, type:'gym', time:'6:00 ص - 12:00 ص', desc:'نادي لياقة متكامل', descAr:'Complete fitness club'},
+        {city:'dubai', name:'Snap Fitness', nameAr:'سناب فيتنس', lat:25.1820, lon:55.2580, rating:4.3, type:'gym', time:'24/7', desc:'نادي رياضي 24 ساعة', descAr:'24-hour gym'},
+
+        {city:'dubai', name:'Super Care Pharmacy', nameAr:'صيدلية سوبر كير', lat:25.2150, lon:55.2770, rating:4.4, type:'pharmacy', time:'24/7', desc:'صيدلية بخدمات شاملة', descAr:'Full-service pharmacy'},
+        {city:'dubai', name:'Medicina Pharmacy', nameAr:'صيدلية ميديسينا', lat:25.2005, lon:55.2690, rating:4.3, type:'pharmacy', time:'24/7', desc:'صيدلية حديثة', descAr:'Modern pharmacy'},
+        {city:'dubai', name:'Community Pharmacy', nameAr:'صيدلية المجتمع', lat:25.2080, lon:55.2840, rating:4.2, type:'pharmacy', time:'24/7', desc:'خدمة سريعة وأسعار مناسبة', descAr:'Fast service & fair prices'},
+        {city:'dubai', name:'Wellcare Pharmacy', nameAr:'صيدلية ويل كير', lat:25.1960, lon:55.2620, rating:4.3, type:'pharmacy', time:'24/7', desc:'عناية صحية متكاملة', descAr:'Complete healthcare'},
+        {city:'dubai', name:'Right Health Pharmacy', nameAr:'صيدلية رايت هيلث', lat:25.2290, lon:55.3010, rating:4.4, type:'pharmacy', time:'24/7', desc:'صيدلية موثوقة', descAr:'Trusted pharmacy'}
+      ],
+      abudhabi: [
+        {city:'abudhabi', name:'Sheikh Khalifa Medical City', nameAr:'مدينة الشيخ خليفة الطبية', lat:24.4540, lon:54.3650, rating:4.6, type:'hospital', time:'24/7', desc:'مستشفى حكومي متطور', descAr:'Advanced government hospital'},
+        {city:'abudhabi', name:'NMC Royal Hospital', nameAr:'مستشفى إن إم سي رويال', lat:24.4660, lon:54.3720, rating:4.4, type:'hospital', time:'24/7', desc:'خدمات طبية متكاملة', descAr:'Comprehensive medical services'},
+        {city:'abudhabi', name:'Medeor Hospital', nameAr:'مستشفى ميديور', lat:24.4825, lon:54.3560, rating:4.5, type:'hospital', time:'24/7', desc:'رعاية صحية عالية الجودة', descAr:'High-quality healthcare'},
+        {city:'abudhabi', name:'LLH Hospital', nameAr:'مستشفى ال ال اتش', lat:24.4695, lon:54.3505, rating:4.3, type:'hospital', time:'24/7', desc:'مستشفى متعدد التخصصات', descAr:'Multi-specialty hospital'},
+        {city:'abudhabi', name:'Danat Al Emarat Hospital', nameAr:'مستشفى دانة الإمارات', lat:24.4630, lon:54.3840, rating:4.7, type:'hospital', time:'24/7', desc:'مستشفى متخصص للنساء والأطفال', descAr:'Women & children specialty hospital'},
+        {city:'abudhabi', name:'Al Rahba Hospital', nameAr:'مستشفى الرحبة', lat:24.5930, lon:54.6250, rating:4.2, type:'hospital', time:'24/7', desc:'خدمات طبية شاملة', descAr:'Full medical services'},
+
+        {city:'abudhabi', name:'Fitness First', nameAr:'فيتنس فيرست', lat:24.4910, lon:54.3770, rating:4.5, type:'gym', time:'6:00 ص - 10:00 م', desc:'نادي رياضي متكامل', descAr:'Full-service gym'},
+        {city:'abudhabi', name:'UFC Gym', nameAr:'يو إف سي جيم', lat:24.4680, lon:54.3815, rating:4.6, type:'gym', time:'5:00 ص - 12:00 ص', desc:'تدريب احترافي ولياقة عالية', descAr:'Professional training & fitness'},
+
+        {city:'abudhabi', name:'Life Pharmacy', nameAr:'صيدلية لايف', lat:24.4850, lon:54.3730, rating:4.4, type:'pharmacy', time:'24/7', desc:'صيدلية رائدة في الإمارات', descAr:'Leading pharmacy chain'},
+        {city:'abudhabi', name:'Aster Pharmacy', nameAr:'صيدلية أستر', lat:24.4720, lon:54.3680, rating:4.3, type:'pharmacy', time:'24/7', desc:'أدوية وخدمات صحية متنوعة', descAr:'Wide range of medicines & healthcare'}
+      ],
+      sharjah: [
+        {city:'sharjah', name:'Kuwait Hospital Sharjah', nameAr:'مستشفى الكويت الشارقة', lat:25.3570, lon:55.4030, rating:4.4, type:'hospital', time:'24/7', desc:'مستشفى حكومي شامل', descAr:'Comprehensive government hospital'},
+        {city:'sharjah', name:'University Hospital Sharjah', nameAr:'مستشفى جامعة الشارقة', lat:25.2850, lon:55.4660, rating:4.6, type:'hospital', time:'24/7', desc:'مستشفى جامعي متطور', descAr:'Advanced university hospital'},
+        {city:'sharjah', name:'Thumbay Hospital Sharjah', nameAr:'مستشفى ثومبي الشارقة', lat:25.3240, lon:55.3880, rating:4.3, type:'hospital', time:'24/7', desc:'مستشفى متعدد التخصصات', descAr:'Multi-specialty hospital'},
+        {city:'sharjah', name:'NMC Royal Hospital Sharjah', nameAr:'مستشفى إن إم سي رويال الشارقة', lat:25.3460, lon:55.4120, rating:4.4, type:'hospital', time:'24/7', desc:'رعاية صحية متكاملة', descAr:'Integrated healthcare'},
+        {city:'sharjah', name:'Al Zahra Hospital Sharjah', nameAr:'مستشفى الزهراء الشارقة', lat:25.3600, lon:55.4300, rating:4.5, type:'hospital', time:'24/7', desc:'مستشفى خاص متقدم', descAr:'Advanced private hospital'},
+        {city:'sharjah', name:'Prime Medical Center', nameAr:'مركز برايم الطبي', lat:25.3370, lon:55.3920, rating:4.2, type:'hospital', time:'24/7', desc:'خدمات طبية متنوعة', descAr:'Diverse medical services'},
+        {city:'sharjah', name:'Medcare Hospital Sharjah', nameAr:'مستشفى ميدكير الشارقة', lat:25.3520, lon:55.4170, rating:4.5, type:'hospital', time:'24/7', desc:'رعاية طبية حديثة', descAr:'Modern medical care'},
+        {city:'sharjah', name:'Saudi German Hospital Ajman', nameAr:'المستشفى السعودي الألماني عجمان', lat:25.4000, lon:55.4800, rating:4.5, type:'hospital', time:'24/7', desc:'قريب من الشارقة متعدد التخصصات', descAr:'Nearby multi-specialty hospital'},
+        {city:'sharjah', name:'Burjeel Specialty Hospital', nameAr:'مستشفى برجيل التخصصي', lat:25.3480, lon:55.4060, rating:4.6, type:'hospital', time:'24/7', desc:'مستشفى تخصصي متقدم', descAr:'Advanced specialty hospital'},
+        {city:'sharjah', name:'Al Tadawi Specialty Hospital', nameAr:'مستشفى التداوي التخصصي', lat:25.3710, lon:55.4450, rating:4.3, type:'hospital', time:'24/7', desc:'خدمات تخصصية متعددة', descAr:'Multiple specialty services'},
+        {city:'sharjah', name:'Ibn Al Nafees Medical Center', nameAr:'مركز ابن النفيس الطبي', lat:25.3330, lon:55.3940, rating:4.2, type:'hospital', time:'24/7', desc:'رعاية طبية موثوقة', descAr:'Trusted medical care'},
+
+        {city:'sharjah', name:'GymNation Sharjah', nameAr:'جيم نيشن الشارقة', lat:25.3200, lon:55.3800, rating:4.4, type:'gym', time:'24/7', desc:'نادي رياضي اقتصادي', descAr:'Affordable gym'},
+        {city:'sharjah', name:'Gold\'s Gym Sharjah', nameAr:'جولدز جيم الشارقة', lat:25.3500, lon:55.4200, rating:4.5, type:'gym', time:'6:00 ص - 11:00 م', desc:'نادي رياضي عالمي', descAr:'International gym'},
+        {city:'sharjah', name:'Fitness First Sharjah', nameAr:'فيتنس فيرست الشارقة', lat:25.3380, lon:55.4010, rating:4.3, type:'gym', time:'6:00 ص - 10:00 م', desc:'نادي متكامل', descAr:'Complete gym'},
+        {city:'sharjah', name:'O2 Gym', nameAr:'نادي أو تو', lat:25.3270, lon:55.3870, rating:4.2, type:'gym', time:'6:00 ص - 12:00 ص', desc:'نادي لياقة حديث', descAr:'Modern fitness club'},
+
+        {city:'sharjah', name:'Life Pharmacy', nameAr:'صيدلية لايف', lat:25.3420, lon:55.4020, rating:4.4, type:'pharmacy', time:'24/7', desc:'سلسلة صيدليات رائدة', descAr:'Leading pharmacy chain'},
+        {city:'sharjah', name:'BinSina Pharmacy', nameAr:'صيدلية ابن سينا', lat:25.3490, lon:55.4150, rating:4.3, type:'pharmacy', time:'24/7', desc:'صيدلية موثوقة', descAr:'Trusted pharmacy'},
+        {city:'sharjah', name:'Aster Pharmacy Rolla', nameAr:'صيدلية أستر - الرولة', lat:25.3570, lon:55.3900, rating:4.2, type:'pharmacy', time:'24/7', desc:'خدمات صحية متنوعة', descAr:'Various health services'},
+        {city:'sharjah', name:'Medicina Pharmacy', nameAr:'صيدلية ميديسينا', lat:25.3350, lon:55.3980, rating:4.3, type:'pharmacy', time:'24/7', desc:'صيدلية حديثة', descAr:'Modern pharmacy'},
+        {city:'sharjah', name:'Community Pharmacy Sharjah', nameAr:'صيدلية المجتمع الشارقة', lat:25.3440, lon:55.4080, rating:4.2, type:'pharmacy', time:'24/7', desc:'خدمة سريعة', descAr:'Fast service'}
+      ],
+      ajman: [
+        {city:'ajman', name:'Sheikh Khalifa General Hospital', nameAr:'مستشفى الشيخ خليفة العام', lat:25.4210, lon:55.4560, rating:4.4, type:'hospital', time:'24/7', desc:'مستشفى حكومي رئيسي', descAr:'Main government hospital'},
+        {city:'ajman', name:'Saudi German Hospital Ajman', nameAr:'المستشفى السعودي الألماني عجمان', lat:25.3990, lon:55.4790, rating:4.5, type:'hospital', time:'24/7', desc:'مستشفى متعدد التخصصات', descAr:'Multi-specialty hospital'},
+        {city:'ajman', name:'Thumbay Hospital Ajman', nameAr:'مستشفى ثومبي عجمان', lat:25.4100, lon:55.4400, rating:4.3, type:'hospital', time:'24/7', desc:'مستشفى جامعي خاص', descAr:'Private university hospital'},
+        {city:'ajman', name:'Amina Hospital', nameAr:'مستشفى أمينة', lat:25.4140, lon:55.4450, rating:4.2, type:'hospital', time:'24/7', desc:'مستشفى خاص بخدمات شاملة', descAr:'Private hospital with full services'},
+        {city:'ajman', name:'Ajman Specialty Hospital', nameAr:'مستشفى عجمان التخصصي', lat:25.4030, lon:55.4420, rating:4.3, type:'hospital', time:'24/7', desc:'خدمات طبية تخصصية', descAr:'Specialty medical services'},
+        {city:'ajman', name:'Al Hanan General Hospital', nameAr:'مستشفى الحنان العام', lat:25.4090, lon:55.4480, rating:4.1, type:'hospital', time:'24/7', desc:'مستشفى عام', descAr:'General hospital'},
+        {city:'ajman', name:'Noor Al Shifa Hospital', nameAr:'مستشفى نور الشفاء', lat:25.4160, lon:55.4520, rating:4.2, type:'hospital', time:'24/7', desc:'رعاية صحية متكاملة', descAr:'Integrated healthcare'},
+        {city:'ajman', name:'Al Saqr Hospital', nameAr:'مستشفى الصقر', lat:25.4070, lon:55.4360, rating:4.0, type:'hospital', time:'24/7', desc:'مستشفى خاص', descAr:'Private hospital'},
+        {city:'ajman', name:'International Modern Hospital', nameAr:'المستشفى الدولي الحديث', lat:25.4180, lon:55.4600, rating:4.3, type:'hospital', time:'24/7', desc:'مستشفى حديث', descAr:'Modern hospital'},
+        {city:'ajman', name:'Carewell Hospital', nameAr:'مستشفى كيرويل', lat:25.4020, lon:55.4340, rating:4.2, type:'hospital', time:'24/7', desc:'رعاية طبية موثوقة', descAr:'Trusted medical care'},
+        {city:'ajman', name:'Al Farabi Medical Center', nameAr:'مركز الفارابي الطبي', lat:25.3950, lon:55.4300, rating:4.1, type:'hospital', time:'24/7', desc:'خدمات طبية متعددة', descAr:'Multiple medical services'},
+
+        {city:'ajman', name:'Gold\'s Gym Ajman', nameAr:'جولدز جيم عجمان', lat:25.4120, lon:55.4470, rating:4.4, type:'gym', time:'6:00 ص - 11:00 م', desc:'نادي رياضي عالمي', descAr:'International gym'},
+        {city:'ajman', name:'Fitness Time Ajman', nameAr:'وقت اللياقة عجمان', lat:25.4060, lon:55.4390, rating:4.3, type:'gym', time:'6:00 ص - 12:00 ص', desc:'نادي لياقة متكامل', descAr:'Complete fitness gym'},
+        {city:'ajman', name:'GymNation Ajman', nameAr:'جيم نيشن عجمان', lat:25.3980, lon:55.4410, rating:4.4, type:'gym', time:'24/7', desc:'نادي اقتصادي 24 ساعة', descAr:'Affordable 24/7 gym'},
+        {city:'ajman', name:'Body & Soul Health Club', nameAr:'نادي بودي آند سول الصحي', lat:25.4050, lon:55.4450, rating:4.2, type:'gym', time:'6:00 ص - 11:00 م', desc:'نادي صحي عائلي', descAr:'Family health club'},
+
+        {city:'ajman', name:'Life Pharmacy Ajman', nameAr:'صيدلية لايف عجمان', lat:25.4100, lon:55.4500, rating:4.4, type:'pharmacy', time:'24/7', desc:'سلسلة صيدليات رائدة', descAr:'Leading pharmacy chain'},
+        {city:'ajman', name:'Aster Pharmacy Ajman', nameAr:'صيدلية أستر عجمان', lat:25.4040, lon:55.4420, rating:4.3, type:'pharmacy', time:'24/7', desc:'خدمات صحية متنوعة', descAr:'Various health services'},
+        {city:'ajman', name:'Medicina Pharmacy', nameAr:'صيدلية مديسينا', lat:25.4000, lon:55.4400, rating:4.1, type:'pharmacy', time:'24/7', desc:'صيدلية حديثة', descAr:'Modern pharmacy'},
+        {city:'ajman', name:'BinSina Pharmacy Ajman', nameAr:'صيدلية ابن سينا عجمان', lat:25.4130, lon:55.4530, rating:4.3, type:'pharmacy', time:'24/7', desc:'صيدلية موثوقة', descAr:'Trusted pharmacy'},
+        {city:'ajman', name:'Community Pharmacy Ajman', nameAr:'صيدلية المجتمع عجمان', lat:25.4080, lon:55.4460, rating:4.2, type:'pharmacy', time:'24/7', desc:'خدمة سريعة', descAr:'Fast service'}
+      ],
+      rak: [
+        {city:'rak', name:'Saqr Hospital', nameAr:'مستشفى صقر', lat:25.7910, lon:55.9420, rating:4.5, type:'hospital', time:'24/7', desc:'مستشفى حكومي رئيسي في رأس الخيمة', descAr:'Main government hospital in RAK'},
+        {city:'rak', name:'Ibrahim Bin Hamad Obaidullah Hospital', nameAr:'مستشفى إبراهيم بن حمد', lat:25.7810, lon:55.9600, rating:4.4, type:'hospital', time:'24/7', desc:'مستشفى حكومي شامل', descAr:'Comprehensive government hospital'},
+        {city:'rak', name:'Sheikh Khalifa Specialty Hospital', nameAr:'مستشفى الشيخ خليفة التخصصي', lat:25.7870, lon:55.9640, rating:4.6, type:'hospital', time:'24/7', desc:'مستشفى تخصصي متقدم', descAr:'Advanced specialty hospital'},
+        {city:'rak', name:'RAK Medical Center', nameAr:'مركز رأس الخيمة الطبي', lat:25.7720, lon:55.9480, rating:4.3, type:'hospital', time:'24/7', desc:'خدمات طبية متعددة', descAr:'Multiple medical services'},
+        {city:'rak', name:'Al Zahrawi Hospital', nameAr:'مستشفى الزهراوي', lat:25.7550, lon:55.9350, rating:4.2, type:'hospital', time:'24/7', desc:'مستشفى عام', descAr:'General hospital'},
+        {city:'rak', name:'RAK International Medical Center', nameAr:'المركز الطبي الدولي رأس الخيمة', lat:25.7680, lon:55.9510, rating:4.4, type:'hospital', time:'24/7', desc:'رعاية صحية موثوقة', descAr:'Trusted healthcare'},
+        {city:'rak', name:'Al Mairid Medical Center', nameAr:'مركز المعيريض الطبي', lat:25.8030, lon:55.9950, rating:4.2, type:'hospital', time:'24/7', desc:'خدمات طبية قريبة من الأحياء', descAr:'Neighborhood medical services'},
+        {city:'rak', name:'Julphar Medical Center', nameAr:'مركز جلفار الطبي', lat:25.7890, lon:55.9800, rating:4.3, type:'hospital', time:'24/7', desc:'مركز طبي متكامل', descAr:'Integrated medical center'},
+        {city:'rak', name:'Al Hamra Medical Center', nameAr:'مركز الحمراء الطبي', lat:25.7000, lon:55.7800, rating:4.4, type:'hospital', time:'24/7', desc:'رعاية طبية للسكان', descAr:'Community healthcare'},
+        {city:'rak', name:'RAK Specialized Medical Clinic', nameAr:'عيادة رأس الخيمة التخصصية', lat:25.7740, lon:55.9550, rating:4.2, type:'hospital', time:'24/7', desc:'عيادات تخصصية', descAr:'Specialty clinics'},
+        {city:'rak', name:'Union Hospital RAK', nameAr:'مستشفى الاتحاد رأس الخيمة', lat:25.7820, lon:55.9700, rating:4.3, type:'hospital', time:'24/7', desc:'خدمات طبية متكاملة', descAr:'Complete medical services'},
+
+        {city:'rak', name:'Gold\'s Gym RAK', nameAr:'جولدز جيم رأس الخيمة', lat:25.7760, lon:55.9490, rating:4.5, type:'gym', time:'6:00 ص - 11:00 م', desc:'نادي رياضي عالمي', descAr:'International gym'},
+        {city:'rak', name:'Fitness Time RAK', nameAr:'وقت اللياقة رأس الخيمة', lat:25.7690, lon:55.9440, rating:4.3, type:'gym', time:'6:00 ص - 12:00 ص', desc:'نادي لياقة متكامل', descAr:'Complete fitness gym'},
+        {city:'rak', name:'O2 Gym RAK', nameAr:'نادي أو تو رأس الخيمة', lat:25.7725, lon:55.9520, rating:4.2, type:'gym', time:'6:00 ص - 12:00 ص', desc:'نادي لياقة حديث', descAr:'Modern fitness club'},
+        {city:'rak', name:'Bodylines Fitness', nameAr:'بودي لاينز فيتنس', lat:25.7650, lon:55.9470, rating:4.4, type:'gym', time:'24/7', desc:'نادي لياقة متطور', descAr:'Advanced fitness gym'},
+
+        {city:'rak', name:'Life Pharmacy RAK', nameAr:'صيدلية لايف رأس الخيمة', lat:25.7800, lon:55.9580, rating:4.4, type:'pharmacy', time:'24/7', desc:'سلسلة صيدليات رائدة', descAr:'Leading pharmacy chain'},
+        {city:'rak', name:'Aster Pharmacy RAK', nameAr:'صيدلية أستر رأس الخيمة', lat:25.7730, lon:55.9500, rating:4.3, type:'pharmacy', time:'24/7', desc:'خدمات صحية متنوعة', descAr:'Various health services'},
+        {city:'rak', name:'Medicina Pharmacy RAK', nameAr:'صيدلية ميديسينا رأس الخيمة', lat:25.7680, lon:55.9460, rating:4.2, type:'pharmacy', time:'24/7', desc:'صيدلية حديثة', descAr:'Modern pharmacy'},
+        {city:'rak', name:'Community Pharmacy RAK', nameAr:'صيدلية المجتمع رأس الخيمة', lat:25.7770, lon:55.9540, rating:4.2, type:'pharmacy', time:'24/7', desc:'خدمة سريعة', descAr:'Fast service'},
+        {city:'rak', name:'Super Care Pharmacy RAK', nameAr:'صيدلية سوبر كير رأس الخيمة', lat:25.7840, lon:55.9620, rating:4.3, type:'pharmacy', time:'24/7', desc:'صيدلية بخدمات شاملة', descAr:'Full-service pharmacy'}
+      ],
+      fujairah: [
+        {city:'fujairah', name:'Sheikh Khalifa Hospital Fujairah', nameAr:'مستشفى الشيخ خليفة الفجيرة', lat:25.1380, lon:56.3250, rating:4.4, type:'hospital', time:'24/7', desc:'مستشفى حكومي متطور', descAr:'Advanced government hospital'},
+        {city:'fujairah', name:'Fujairah Hospital', nameAr:'مستشفى الفجيرة', lat:25.1300, lon:56.3300, rating:4.2, type:'hospital', time:'24/7', desc:'مستشفى حكومي عام', descAr:'General government hospital'},
+        {city:'fujairah', name:'Thumbay Hospital Fujairah', nameAr:'مستشفى ثومبي الفجيرة', lat:25.1250, lon:56.3350, rating:4.3, type:'hospital', time:'24/7', desc:'مستشفى خاص', descAr:'Private hospital'},
+        {city:'fujairah', name:'Al Bidiya Health Centre', nameAr:'مركز البدية الصحي', lat:25.4246, lon:56.3502, rating:3.7, type:'hospital', time:'24/7', desc:'مركز صحي حكومي', descAr:'Government health centre'},
+        {city:'fujairah', name:'Sharq Hospital', nameAr:'مستشفى شرق', lat:25.1513, lon:56.9276, rating:5.0, type:'hospital', time:'24/7', desc:'مستشفى خاص عالي الجودة', descAr:'High-quality private hospital'},
+        {city:'fujairah', name:'Al Abeer Hospital Fujairah', nameAr:'مستشفى العبير الفجيرة', lat:25.1340, lon:56.3380, rating:4.3, type:'hospital', time:'24/7', desc:'مستشفى متعدد التخصصات', descAr:'Multi-specialty hospital'},
+        {city:'fujairah', name:'Fujairah Medical Center', nameAr:'مركز الفجيرة الطبي', lat:25.1400, lon:56.3320, rating:4.2, type:'hospital', time:'24/7', desc:'خدمات طبية متنوعة', descAr:'Various medical services'},
+        {city:'fujairah', name:'Al Sharq Medical Center', nameAr:'مركز الشرق الطبي', lat:25.1480, lon:56.3400, rating:4.1, type:'hospital', time:'24/7', desc:'رعاية صحية موثوقة', descAr:'Trusted healthcare'},
+        {city:'fujairah', name:'GMC Hospital Fujairah', nameAr:'مستشفى جي إم سي الفجيرة', lat:25.1290, lon:56.3270, rating:4.4, type:'hospital', time:'24/7', desc:'مستشفى حديث', descAr:'Modern hospital'},
+        {city:'fujairah', name:'Lulu Medical Center Fujairah', nameAr:'مركز لولو الطبي الفجيرة', lat:25.1360, lon:56.3290, rating:4.2, type:'hospital', time:'24/7', desc:'خدمات طبية سريعة', descAr:'Fast medical services'},
+        {city:'fujairah', name:'Al Faseel Medical Center', nameAr:'مركز الفصيل الطبي', lat:25.1420, lon:56.3340, rating:4.1, type:'hospital', time:'24/7', desc:'رعاية طبية مجتمعية', descAr:'Community healthcare'},
+
+        {city:'fujairah', name:'GymNation Fujairah', nameAr:'جيم نيشن الفجيرة', lat:25.1330, lon:56.3310, rating:4.4, type:'gym', time:'24/7', desc:'نادي رياضي 24 ساعة', descAr:'24/7 gym'},
+        {city:'fujairah', name:'Gold\'s Gym Fujairah', nameAr:'جولدز جيم الفجيرة', lat:25.1370, lon:56.3360, rating:4.5, type:'gym', time:'6:00 ص - 11:00 م', desc:'نادي رياضي عالمي', descAr:'International gym'},
+        {city:'fujairah', name:'Fitness Time Fujairah', nameAr:'وقت اللياقة الفجيرة', lat:25.1280, lon:56.3340, rating:4.3, type:'gym', time:'6:00 ص - 12:00 ص', desc:'نادي لياقة متكامل', descAr:'Complete fitness gym'},
+        {city:'fujairah', name:'O2 Gym Fujairah', nameAr:'نادي أو تو الفجيرة', lat:25.1410, lon:56.3370, rating:4.2, type:'gym', time:'6:00 ص - 12:00 ص', desc:'نادي لياقة حديث', descAr:'Modern fitness club'},
+
+        {city:'fujairah', name:'Life Pharmacy Fujairah', nameAr:'صيدلية لايف الفجيرة', lat:25.1350, lon:56.3305, rating:4.4, type:'pharmacy', time:'24/7', desc:'سلسلة صيدليات رائدة', descAr:'Leading pharmacy chain'},
+        {city:'fujairah', name:'Aster Pharmacy Fujairah', nameAr:'صيدلية أستر الفجيرة', lat:25.1310, lon:56.3325, rating:4.3, type:'pharmacy', time:'24/7', desc:'خدمات صحية متنوعة', descAr:'Various health services'},
+        {city:'fujairah', name:'BinSina Pharmacy Fujairah', nameAr:'صيدلية ابن سينا الفجيرة', lat:25.1390, lon:56.3365, rating:4.3, type:'pharmacy', time:'24/7', desc:'صيدلية موثوقة', descAr:'Trusted pharmacy'},
+        {city:'fujairah', name:'Medicina Pharmacy Fujairah', nameAr:'صيدلية ميديسينا الفجيرة', lat:25.1270, lon:56.3330, rating:4.2, type:'pharmacy', time:'24/7', desc:'صيدلية حديثة', descAr:'Modern pharmacy'},
+        {city:'fujairah', name:'Community Pharmacy Fujairah', nameAr:'صيدلية المجتمع الفجيرة', lat:25.1430, lon:56.3380, rating:4.2, type:'pharmacy', time:'24/7', desc:'خدمة سريعة', descAr:'Fast service'}
+      ],
+      uaq: [
+        {city:'uaq', name:'Sheikh Khalifa General Hospital', nameAr:'مستشفى الشيخ خليفة العام', lat:25.5400, lon:55.5600, rating:4.5, type:'hospital', time:'24/7', desc:'مستشفى حكومي حديث', descAr:'Modern government hospital'},
+        {city:'uaq', name:'Umm Al Quwain Hospital', nameAr:'مستشفى أم القيوين', lat:25.5640, lon:55.5550, rating:4.3, type:'hospital', time:'24/7', desc:'مستشفى حكومي عام', descAr:'General government hospital'},
+        {city:'uaq', name:'Al Salama Hospital', nameAr:'مستشفى السلامة', lat:25.5580, lon:55.5610, rating:4.2, type:'hospital', time:'24/7', desc:'مستشفى خاص', descAr:'Private hospital'},
+        {city:'uaq', name:'Al Raffah Medical Center', nameAr:'مركز الرفاه الطبي', lat:25.5520, lon:55.5480, rating:4.1, type:'hospital', time:'24/7', desc:'خدمات طبية متنوعة', descAr:'Various medical services'},
+        {city:'uaq', name:'New Medical Center UAQ', nameAr:'المركز الطبي الجديد أم القيوين', lat:25.5450, lon:55.5520, rating:4.0, type:'hospital', time:'24/7', desc:'مركز طبي عام', descAr:'General medical center'},
+        {city:'uaq', name:'Al Hayat Medical Center', nameAr:'مركز الحياة الطبي', lat:25.5500, lon:55.5580, rating:4.2, type:'hospital', time:'24/7', desc:'رعاية طبية موثوقة', descAr:'Trusted healthcare'},
+        {city:'uaq', name:'Care Plus Medical Center', nameAr:'مركز كير بلس الطبي', lat:25.5560, lon:55.5530, rating:4.1, type:'hospital', time:'24/7', desc:'خدمات طبية متكاملة', descAr:'Integrated medical services'},
+        {city:'uaq', name:'Al Ameen Medical Center', nameAr:'مركز الأمين الطبي', lat:25.5480, lon:55.5590, rating:4.0, type:'hospital', time:'24/7', desc:'خدمات طبية أساسية', descAr:'Essential medical services'},
+        {city:'uaq', name:'Noor Al Shifa Medical Center', nameAr:'مركز نور الشفاء الطبي', lat:25.5600, lon:55.5650, rating:4.2, type:'hospital', time:'24/7', desc:'رعاية صحية مجتمعية', descAr:'Community healthcare'},
+        {city:'uaq', name:'Family Care Medical Center', nameAr:'مركز العناية العائلية الطبي', lat:25.5530, lon:55.5460, rating:4.1, type:'hospital', time:'24/7', desc:'خدمات طبية للعائلة', descAr:'Family medical services'},
+        {city:'uaq', name:'Union Medical Center UAQ', nameAr:'مركز الاتحاد الطبي أم القيوين', lat:25.5590, lon:55.5500, rating:4.2, type:'hospital', time:'24/7', desc:'رعاية طبية شاملة', descAr:'Comprehensive medical care'},
+
+        {city:'uaq', name:'GymNation UAQ', nameAr:'جيم نيشن أم القيوين', lat:25.5510, lon:55.5570, rating:4.4, type:'gym', time:'24/7', desc:'نادي رياضي 24 ساعة', descAr:'24/7 gym'},
+        {city:'uaq', name:'Fitness Time UAQ', nameAr:'وقت اللياقة أم القيوين', lat:25.5460, lon:55.5540, rating:4.3, type:'gym', time:'6:00 ص - 12:00 ص', desc:'نادي لياقة متكامل', descAr:'Complete fitness gym'},
+        {city:'uaq', name:'Gold\'s Gym UAQ', nameAr:'جولدز جيم أم القيوين', lat:25.5570, lon:55.5620, rating:4.5, type:'gym', time:'6:00 ص - 11:00 م', desc:'نادي رياضي عالمي', descAr:'International gym'},
+        {city:'uaq', name:'O2 Gym UAQ', nameAr:'نادي أو تو أم القيوين', lat:25.5490, lon:55.5510, rating:4.2, type:'gym', time:'6:00 ص - 12:00 ص', desc:'نادي لياقة حديث', descAr:'Modern fitness club'},
+
+        {city:'uaq', name:'Life Pharmacy UAQ', nameAr:'صيدلية لايف أم القيوين', lat:25.5540, lon:55.5585, rating:4.4, type:'pharmacy', time:'24/7', desc:'سلسلة صيدليات رائدة', descAr:'Leading pharmacy chain'},
+        {city:'uaq', name:'Aster Pharmacy UAQ', nameAr:'صيدلية أستر أم القيوين', lat:25.5470, lon:55.5555, rating:4.3, type:'pharmacy', time:'24/7', desc:'خدمات صحية متنوعة', descAr:'Various health services'},
+        {city:'uaq', name:'BinSina Pharmacy UAQ', nameAr:'صيدلية ابن سينا أم القيوين', lat:25.5605, lon:55.5630, rating:4.3, type:'pharmacy', time:'24/7', desc:'صيدلية موثوقة', descAr:'Trusted pharmacy'},
+        {city:'uaq', name:'Medicina Pharmacy UAQ', nameAr:'صيدلية ميديسينا أم القيوين', lat:25.5455, lon:55.5525, rating:4.2, type:'pharmacy', time:'24/7', desc:'صيدلية حديثة', descAr:'Modern pharmacy'},
+        {city:'uaq', name:'Community Pharmacy UAQ', nameAr:'صيدلية المجتمع أم القيوين', lat:25.5585, lon:55.5595, rating:4.2, type:'pharmacy', time:'24/7', desc:'خدمة سريعة', descAr:'Fast service'}
+      ]
+    };
+
+    function getUserLocation() {
+      const userProfile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      if (userProfile.latitude && userProfile.longitude) {
+        userLocation = {lat: parseFloat(userProfile.latitude), lon: parseFloat(userProfile.longitude)};
+      }
+
+      if (userProfile.emirate) {
+        const map = {
+          'Abu Dhabi': 'abudhabi', 'Dubai': 'dubai', 'Sharjah': 'sharjah',
+          'Ajman': 'ajman', 'Ras Al Khaimah': 'rak', 'Fujairah': 'fujairah',
+          'Umm Al Quwain': 'uaq'
+        };
+        if (map[userProfile.emirate]) {
+          currentCity = map[userProfile.emirate];
+          const select = document.getElementById('city-select');
+          if (select) select.value = currentCity;
+        }
+      }
+    }
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371;
+      const dLat = (lat2 - lat1) * Math.PI / 180;
+      const dLon = (lon2 - lon1) * Math.PI / 180;
+      const a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)*Math.sin(dLon/2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+      return (R * c).toFixed(1);
+    }
+
+    function filterAndSort() {
+      let places = allPlaces[currentCity] || [];
+      
+      // Filter by Type
+      if (currentType) {
+        places = places.filter(p => p.type === currentType);
+      }
+      
+      filteredPlaces = places.map(p => ({
+        ...p,
+        distance: calculateDistance(userLocation.lat, userLocation.lon, p.lat, p.lon)
+      }));
+
+      // Sort the places
+      if (currentSort === 'nearest') {
+        filteredPlaces.sort((a,b) => parseFloat(a.distance) - parseFloat(b.distance));
+      } else if (currentSort === 'rating') {
+        filteredPlaces.sort((a,b) => b.rating - a.rating);
+      }
+
+      renderPlaces(filteredPlaces);
+    }
+
+    function renderPlaces(places) {
+      const list = document.getElementById('places-list');
+      list.innerHTML = '';
+      
+      if (places.length === 0) {
+        list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--muted)">${currentLanguage === 'ar' ? 'لا توجد نتائج' : 'No results found'}</div>`;
+        return;
+      }
+
+      // Get only the top 4 results
+      const topPlaces = places.slice(0, 4);
+      
+      topPlaces.forEach(p => {
+        const item = document.createElement('article');
+        item.className = 'item';
+        item.onclick = () => showPlace(p);
+        
+        const name = currentLanguage === 'ar' ? (p.nameAr || p.name) : p.name;
+        const distanceText = currentLanguage === 'ar' ? `${p.distance} كم` : `${p.distance} km`;
+        const ratingText = `⭐ ${p.rating}`;
+        
+        // Type badge
+        let typeText = p.type;
+        if (currentLanguage === 'ar') {
+          if (p.type === 'hospital') typeText = 'مستشفى';
+          else if (p.type === 'gym') typeText = 'نادي رياضي';
+          else if (p.type === 'pharmacy') typeText = 'صيدلية';
+        } else {
+          typeText = p.type.charAt(0).toUpperCase() + p.type.slice(1);
+        }
+        
+        item.innerHTML = `
+          <div class="pin">📍</div>
+          <img class="thumb" src="https://placehold.co/80x48?text=${encodeURIComponent(name.substring(0, 10))}" alt="${name}">
+          <div class="label">
+            <span>${name}</span>
+            <div><span class="type-badge">${typeText}</span></div>
+            <div style="display:flex; gap:8px; margin-top:2px;">
+              <span class="distance-badge">${distanceText}</span>
+              <span class="rating-badge">${ratingText}</span>
+            </div>
+          </div>
+        `;
+        list.appendChild(item);
+      });
+    }
+
+    function sortPlaces(type, event) {
+      if (event) {
+        event.preventDefault();
+        currentSort = type;
+        
+        // Update active button
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+          btn.classList.remove('active');
+        });
+        event.target.classList.add('active');
+      } else {
+        currentSort = type;
+      }
+      
+      filterAndSort();
+    }
+
+    function changeCity(city) {
+      currentCity = city;
+      filterAndSort();
+    }
+
+    function changeType(type) {
+      currentType = type;
+      filterAndSort();
+    }
+
+    function showPlace(p) {
+      const panel = document.getElementById('info-panel');
+      
+      if (panel.dataset.currentPlace === p.name && panel.classList.contains('active')) {
+        panel.classList.remove('active');
+        panel.dataset.currentPlace = '';
+        return;
+      }
+      
+      panel.dataset.currentPlace = p.name;
+      const bbox = `${p.lon-0.008},${p.lat-0.008},${p.lon+0.008},${p.lat+0.008}`;
+      document.querySelector('.map iframe').src = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik`;
+      
+      const name = currentLanguage === 'ar' ? (p.nameAr || p.name) : p.name;
+      const desc = currentLanguage === 'ar' ? p.descAr : p.desc;
+      const time = p.time;
+      const distanceText = currentLanguage === 'ar' ? `${p.distance} كم` : `${p.distance} km`;
+      const ratingText = `${p.rating}/5`;
+      
+      // Type text for panel
+      let typeText = p.type;
+      if (currentLanguage === 'ar') {
+        if (p.type === 'hospital') typeText = 'مستشفى';
+        else if (p.type === 'gym') typeText = 'نادي رياضي';
+        else if (p.type === 'pharmacy') typeText = 'صيدلية';
+      } else {
+        typeText = p.type.charAt(0).toUpperCase() + p.type.slice(1);
+      }
+
+      document.getElementById('p-title').innerText = name;
+      document.getElementById('p-rating').innerText = ratingText;
+      document.getElementById('p-distance').innerText = distanceText;
+      document.getElementById('p-time').innerText = time;
+      document.getElementById('p-type').innerText = typeText;
+      document.getElementById('p-desc').innerText = desc;
+      panel.classList.add('active');
+
+      const item = { title: name, lat: p.lat, lon: p.lon, date: new Date().toISOString() };
+      let history = JSON.parse(localStorage.getItem('hayyak_history') || '[]');
+      history = history.filter(i => i.title !== name);
+      history.unshift(item);
+      if (history.length > 20) history.pop();
+      localStorage.setItem('hayyak_history', JSON.stringify(history));
+    }
+
+    let toastTimeout;
+    function showError(message) {
+      const toast = document.getElementById('error-toast');
+      if (!toast) {
+        const newToast = document.createElement('div');
+        newToast.id = 'error-toast';
+        newToast.className = 'error-toast';
+        document.body.appendChild(newToast);
+      }
+      const toast2 = document.getElementById('error-toast');
+      toast2.innerText = message;
+      toast2.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast2.classList.remove('show');
+      }, 3500);
+    }
+
+    const searchInput = document.getElementById('search-input');
+    const autocompleteList = document.getElementById('autocomplete-list');
+    
+    searchInput.addEventListener('input', function (e) {
+      const query = this.value.trim();
+      if (query.length >= 2) {
+        showAutocomplete(query);
+      } else {
+        autocompleteList.classList.remove('active');
+      }
+    });
+
+    function showAutocomplete(query) {
+      const queryLower = query.toLowerCase().trim();
+      const results = Object.values(allPlaces).flat().filter(p => {
+        const name = currentLanguage === 'ar' ? (p.nameAr || p.name) : p.name;
+        return name.toLowerCase().includes(queryLower);
+      }).slice(0, 5);
+
+      if (results.length === 0) {
+        autocompleteList.classList.remove('active');
+        return;
+      }
+
+      autocompleteList.innerHTML = results.map(place => {
+        const name = currentLanguage === 'ar' ? (place.nameAr || place.name) : place.name;
+        const desc = currentLanguage === 'ar' ? place.descAr : place.desc;
+        return `
+          <div class="autocomplete-item" onclick="selectPlace('${place.city}', '${place.name}')">
+            <div class="autocomplete-item-name">${name}</div>
+            <div class="autocomplete-item-desc">${desc}</div>
+          </div>
+        `;
+      }).join('');
+      
+      autocompleteList.classList.add('active');
+    }
+
+    function selectPlace(city, placeName) {
+      const place = allPlaces[city].find(p => p.name === placeName);
+      if (!place) return;
+      
+      const name = currentLanguage === 'ar' ? (place.nameAr || place.name) : place.name;
+      searchInput.value = name;
+      autocompleteList.classList.remove('active');
+      currentCity = city;
+      document.getElementById('city-select').value = city;
+      // Reset filters to show the selected place
+      currentType = '';
+      document.getElementById('type-select').value = '';
+      
+      filterAndSort();
+      const distance = calculateDistance(userLocation.lat, userLocation.lon, place.lat, place.lon);
+      showPlace({...place, distance});
+    }
+
+    // Initialize
+    window.onload = function() {
+      document.getElementById('translateBtn').addEventListener('click', toggleLanguage);
+      
+      const userProfile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      if (userProfile.language && userProfile.language !== currentLanguage) {
+        currentLanguage = userProfile.language;
+        document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = currentLanguage;
+        const btn = document.getElementById('translateBtn');
+        if (btn) {
+          const langText = btn.querySelector('span:last-child');
+          if (langText) langText.textContent = currentLanguage === 'ar' ? 'English' : 'العربية';
+        }
+        translateAllContent();
+      }
+      
+      // Apply Theme
+      if (userProfile.theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+      
+      getUserLocation();
+      filterAndSort();
+    };
+  </script>
+</body>
+</html>
