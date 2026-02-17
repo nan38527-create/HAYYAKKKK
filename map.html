@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>حياك | الخريطة</title>
+  <link rel="icon" type="image/jpeg" href="favicon.jpeg">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Aadi.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Aadi.woff') format('woff'),
+           url('./afeesh/Afeesh-Aadi.ttf') format('truetype');
+      font-weight: 400; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-Mekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-Mekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-Mekalbaz.ttf') format('truetype');
+      font-weight: 700; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-NosMekalbaz.woff2') format('woff2'),
+           url('./afeesh/Afeesh-NosMekalbaz.woff') format('woff'),
+           url('./afeesh/Afeesh-NosMekalbaz.ttf') format('truetype');
+      font-weight: 600; font-style: normal; font-display: swap;
+    }
+    @font-face {
+      font-family: 'Afeesh';
+      src: url('./afeesh/Afeesh-NosMesalwa.woff2') format('woff2'),
+           url('./afeesh/Afeesh-NosMesalwa.woff') format('woff'),
+           url('./afeesh/Afeesh-NosMesalwa.ttf') format('truetype');
+      font-weight: 300; font-style: normal; font-display: swap;
+    }
+    :root {
+      --bg: #f5f5f7; --card: #ffffff; --ink: #0f0f10; --muted: #6b7280; --line: #0f0f10; --radius: 14px;
+    }
+    [data-theme="dark"] {
+      --bg: #121212; --card: #1e1e1e; --ink: #ffffff; --muted: #a0a0a0; --line: #333333;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0;}
+    body{font-family: Cairo, system-ui, sans-serif; background: var(--bg); color: var(--ink); overflow: hidden;}
+    main { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+    #map{height:100%; width: 100%;}
+
+    header.brand{
+      text-align:center; background:#16243d; color:#ffffff; padding:20px; 
+      position: fixed; top: 0; left: 0; right: 0; z-index: 5000;
+      transform: translateY(-100%);
+      transition: transform 0.3s ease-in-out;
+    }
+    header.brand.visible {
+      transform: translateY(0);
+    }
+    .logo-text { font-family: 'Afeesh', sans-serif; font-weight: 700; font-size: 48px; letter-spacing: 2px; color: #d4af37; }
+    .logo-sub { font-family: 'Afeesh', sans-serif; font-weight: 600; color: #94a3b8; font-size: 20px; margin-top: 2px; letter-spacing: 3px; }
+    .home-btn { position: absolute; top: 50%; left: 20px; transform: translateY(-50%); color: #d4af37; text-decoration: none; font-size: 15px; background-color: #0f0f10; padding: 9px 12px; border-radius: 999px; }
+
+    .translate-btn {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      background: #d4af37;
+      border: 2px solid #ffffff;
+      border-radius: 20px;
+      color: #16243d;
+      padding: 6px 14px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.3s ease;
+      box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+      z-index: 4001;
+    }
+    .translate-btn:hover {
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 5px 15px rgba(212, 175, 55, 0.5);
+      background: #f7ef8a;
+    }
+    .translate-btn .icon { font-size: 16px; }
+
+    footer { 
+      background: #16243d; color: #ffffff; text-align: center; font-size: 14px; padding: 20px; 
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 5000;
+      transform: translateY(100%);
+      transition: transform 0.3s ease-in-out;
+    }
+    footer.visible {
+      transform: translateY(0);
+    }
+
+    .controls{position:absolute; left:12px; top:12px; z-index:4000; background:var(--card); padding:8px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.12); border: 2px solid var(--line);}
+    .modes button{margin:4px; padding: 6px 10px; border: 2px solid var(--line); border-radius: 8px; background: var(--card); cursor: pointer; font-weight: 600; color: var(--ink);}
+    .modes button:hover { background: #f0f0f0; }
+    [data-theme="dark"] .modes button { background: #333; color: #fff; border-color: #555; }
+    [data-theme="dark"] .modes button:hover { background: #444; }
+    .modes button.active { background: #d4af37; color: #16243d; border-color: #16243d; }
+    [data-theme="dark"] .modes button.active { background: #f7ef8a; color: #16243d; border-color: #f7ef8a; }
+
+    .panel{position:absolute; right:12px; top:12px; z-index:4000; width:300px; max-height:70vh; overflow:auto; background:var(--card); padding:12px; border-radius:10px; box-shadow:0 4px 12px rgba(0,0,0,0.12); border: 2px solid var(--line);}
+    /* إزالة قسم المعالم السفلية بالكامل */
+    
+    #panel-price, #panel-rating, #panel-time {
+      color: var(--ink);
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <header class="brand">
+    <a href="home.html" class="home-btn" data-ar="رجوع" data-en="Back">رجوع</a>
+    <div class="logo-text">حــــــيــــاك</div>
+    <div class="logo-sub">HAYYAK</div>
+    <button class="translate-btn" id="translateBtn" aria-label="تبديل اللغة">
+      <span class="icon">🌐</span>
+      <span id="translateText">English</span>
+    </button>
+  </header>
+  <main>
+    <div id="map"></div>
+    <div class="controls">
+      <div><strong id="place-name">الخريطة</strong></div>
+      <div class="modes">
+        <button id="mode-driving" data-ar="سيارة" data-en="Driving">سيارة</button>
+        <button id="mode-walking" data-ar="مشي" data-en="Walking">مشي</button>
+        <button id="mode-cycling" data-ar="دراجة" data-en="Cycling">دراجة</button>
+        <button id="mode-bus" data-ar="حافلة (تقديري)" data-en="Bus (Est.)">حافلة (تقديري)</button>
+      </div>
+    </div>
+    <div class="panel" id="panel">
+      <h4 id="summary" data-ar="تفاصيل الرحلة" data-en="Trip Details">تفاصيل الرحلة</h4>
+      <div style="background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+          <div style="text-align: center; padding: 8px; background: var(--card); border-radius: 6px;">
+            <div style="font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 4px;" data-ar="السعر" data-en="Price">السعر</div>
+            <div id="panel-price" style="font-weight: 700; font-size: 14px;">N/A</div>
+          </div>
+          <div style="text-align: center; padding: 8px; background: var(--card); border-radius: 6px;">
+            <div style="font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 4px;" data-ar="التقييم" data-en="Rating">التقييم</div>
+            <div id="panel-rating" style="font-weight: 700; font-size: 14px;">N/A</div>
+          </div>
+          <div style="text-align: center; padding: 8px; background: var(--card); border-radius: 6px;">
+            <div style="font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 4px;" data-ar="الأوقات" data-en="Hours">الأوقات</div>
+            <div id="panel-time" style="font-weight: 700; font-size: 13px; word-wrap: break-word;">N/A</div>
+          </div>
+          <div style="text-align: center; padding: 8px; background: var(--card); border-radius: 6px;">
+            <div style="font-size: 12px; color: var(--muted); font-weight: 600; margin-bottom: 4px;" data-ar="معالم قريبة منه" data-en="Nearby">معالم قريبة منه</div>
+            <div id="panel-nearby" style="font-weight: 700; font-size: 13px;">N/A</div>
+          </div>
+        </div>
+      </div>
+      <div id="times"></div>
+      <hr>
+      <h4 data-ar="الاتجاهات" data-en="Directions">الاتجاهات</h4>
+      <ol id="directions"></ol>
+      <!-- تم حذف قسم المعالم القريبة السفلي بالكامل -->
+    </div>
+  </main>
+  <footer data-ar="© عبدالله بن ناصر - حياك" data-en="© Abdullah bin Nasser - Hayyak">© عبدالله بن ناصر - حياك</footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    (function() {
+      // ---------- قراءة المعاملات ----------
+      const urlParams = new URLSearchParams(window.location.search);
+      const destLat = parseFloat(urlParams.get('lat')) || 25.2048;
+      const destLon = parseFloat(urlParams.get('lon')) || 55.2708;
+      const destName = urlParams.get('name') ? decodeURIComponent(urlParams.get('name')) : (urlParams.get('n') || 'الوجهة');
+      const destPrice = urlParams.get('price') ? decodeURIComponent(urlParams.get('price')) : 'N/A';
+      const destTime = urlParams.get('time') ? decodeURIComponent(urlParams.get('time')) : 'N/A';
+      const destRating = parseFloat(urlParams.get('rating')) || 0;
+
+      document.getElementById('place-name').innerText = destName;
+
+      // ---------- بيانات المستخدم ----------
+      let profile = {};
+      try { profile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}'); } catch(e){}
+      const startLat = profile.latitude ? parseFloat(profile.latitude) : 25.2048;
+      const startLon = profile.longitude ? parseFloat(profile.longitude) : 55.2708;
+
+      // ---------- معالم ثنائية اللغة (فقط للعداد) ----------
+      const landmarksData = [
+        { nameEn: 'Burj Khalifa', nameAr: 'برج خليفة', lat:25.1972, lon:55.2744 },
+        { nameEn: 'Dubai Mall', nameAr: 'دبي مول', lat:25.1975, lon:55.2796 },
+        { nameEn: 'Jumeirah Beach', nameAr: 'شاطئ جميرا', lat:25.1426, lon:55.1850 },
+        { nameEn: 'Sheikh Zayed Grand Mosque', nameAr: 'جامع الشيخ زايد الكبير', lat:24.4121, lon:54.4741 }
+      ];
+
+      // ---------- حالة التطبيق ----------
+      let currentLanguage = 'ar';
+      let currentMode = 'driving';
+      let routeLayer = null;
+
+      // سرعات ثابتة (كم/دقيقة)
+      const SPEEDS = {
+        driving: 1.3,
+        walking: 0.15,
+        cycling: 0.5,
+        bus: 0.9
+      };
+
+      // ---------- دالة الترجمة الشاملة ----------
+      function translatePage() {
+        const isAr = currentLanguage === 'ar';
+        document.title = isAr ? 'حياك | الخريطة' : 'Hayyak | Map';
+        document.querySelectorAll('[data-ar]').forEach(el => {
+          el.textContent = isAr ? el.dataset.ar : el.dataset.en;
+        });
+        document.getElementById('translateText').textContent = isAr ? 'English' : 'العربية';
+        const summaryEl = document.getElementById('summary');
+        if (summaryEl) {
+          summaryEl.textContent = (isAr ? 'تفاصيل الرحلة' : 'Trip Details') + (destName ? ' - ' + destName : '');
+        }
+        updateNearbyCount(); // تحديث العداد باللغة الجديدة
+        // إعادة تحميل المسار لتحديث النصوص
+        if (currentMode !== 'bus') {
+          loadRoute(currentMode);
+        } else {
+          recalcBusEstimate();
+        }
+      }
+
+      function updateNearbyCount() {
+        const nbEl = document.getElementById('panel-nearby');
+        if (!nbEl) return;
+        const count = landmarksData.filter(l => {
+          const d = Math.hypot(l.lat - destLat, l.lon - destLon) * 111;
+          return d < 40;
+        }).length;
+        nbEl.textContent = currentLanguage === 'ar' 
+          ? (count > 0 ? `${count} معالم` : 'لا يوجد') 
+          : (count > 0 ? `${count} places` : 'None');
+      }
+
+      function toggleLanguage() {
+        currentLanguage = currentLanguage === 'ar' ? 'en' : 'ar';
+        document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = currentLanguage;
+        const profile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+        profile.language = currentLanguage;
+        localStorage.setItem('hayyak_user_profile', JSON.stringify(profile));
+        translatePage();
+      }
+
+      function updateActiveModeButtons() {
+        const ids = ['mode-driving','mode-walking','mode-cycling','mode-bus'];
+        ids.forEach(id => document.getElementById(id).classList.remove('active'));
+        const activeId = currentMode === 'driving' ? 'mode-driving' : currentMode === 'walking' ? 'mode-walking' : currentMode === 'cycling' ? 'mode-cycling' : 'mode-bus';
+        const el = document.getElementById(activeId);
+        if (el) el.classList.add('active');
+      }
+
+      // بناء تعليمات المسار (نفس الوظيفة السابقة)
+      function buildInstruction(step, lang) {
+        const isAr = lang === 'ar';
+        const t = step.maneuver?.type || '';
+        const m = step.maneuver?.modifier || '';
+        const road = step.name || '';
+        const onto = isAr ? (road ? ` إلى ${road}` : '') : (road ? ` onto ${road}` : '');
+        const towards = isAr ? (road ? ` باتجاه ${road}` : '') : (road ? ` toward ${road}` : '');
+
+        function arDir(mod) {
+          switch(mod){
+            case 'right': return 'يمينًا';
+            case 'left': return 'يسارًا';
+            case 'slight right': return 'يمينًا قليلًا';
+            case 'slight left': return 'يسارًا قليلًا';
+            case 'sharp right': return 'يمينًا حادًا';
+            case 'sharp left': return 'يسارًا حادًا';
+            case 'uturn': return 'استدارة للخلف';
+            case 'straight': return 'مباشرة';
+            default: return '';
+          }
+        }
+
+        function enDir(mod) {
+          switch(mod){
+            case 'right': return 'right';
+            case 'left': return 'left';
+            case 'slight right': return 'slight right';
+            case 'slight left': return 'slight left';
+            case 'sharp right': return 'sharp right';
+            case 'sharp left': return 'sharp left';
+            case 'uturn': return 'a U-turn';
+            case 'straight': return 'straight';
+            default: return '';
+          }
+        }
+
+        if (isAr) {
+          switch(t){
+            case 'depart': return road ? `ابدأ على ${road}` : 'ابدأ';
+            case 'arrive': return 'لقد وصلت إلى وجهتك';
+            case 'turn': return `انعطف ${arDir(m)}${onto}`.trim();
+            case 'roundabout': {
+              const exit = step.maneuver?.exit;
+              const exitText = exit ? ` ثم اخرج من المخرج ${exit}` : '';
+              return `ادخل الدوار${exitText}${onto}`.trim();
+            }
+            case 'merge': return `اندماج إلى${onto}`.trim();
+            case 'on ramp': return `اصعد المنحدر${onto}`.trim();
+            case 'off ramp': return `انزل المنحدر${onto}`.trim();
+            case 'fork': return `عند التفرع تابع ${arDir(m)}`.trim() + onto;
+            case 'continue': return `تابع ${arDir(m) || 'سيرك'}${towards}`.trim();
+            default: return (step.maneuver?.instruction) || (t + ' ' + (road || ''));
+          }
+        } else {
+          switch(t){
+            case 'depart': return road ? `Start on ${road}` : 'Start';
+            case 'arrive': return 'You have arrived at your destination';
+            case 'turn': return `Turn ${enDir(m)}${onto}`.trim();
+            case 'roundabout': {
+              const exit = step.maneuver?.exit;
+              const exitText = exit ? ` and take exit ${exit}` : '';
+              return `Enter the roundabout${exitText}${onto}`.trim();
+            }
+            case 'merge': return `Merge${onto}`.trim();
+            case 'on ramp': return `Take the ramp${onto}`.trim();
+            case 'off ramp': return `Take the exit${onto}`.trim();
+            case 'fork': return `At the fork, keep ${enDir(m)}${towards}`.trim();
+            case 'continue': return `Continue ${enDir(m) || ''}${towards}`.trim();
+            default: return (step.maneuver?.instruction) || (t + ' ' + (road || ''));
+          }
+        }
+      }
+
+      // ---------- تحميل المسار من OSRM (سيارة/مشي/دراجة) مع حساب الوقت بالسرعة الثابتة ----------
+      async function loadRoute(profileMode) {
+        currentMode = profileMode;
+        updateActiveModeButtons();
+
+        const prof = profileMode === 'driving' ? 'driving' : profileMode === 'walking' ? 'walking' : 'cycling';
+        const url = `https://router.project-osrm.org/route/v1/${prof}/${startLon},${startLat};${destLon},${destLat}?overview=full&geometries=geojson&steps=true`;
+
+        const timesDiv = document.getElementById('times');
+        const directionsOl = document.getElementById('directions');
+        timesDiv.innerHTML = currentLanguage === 'ar' ? '<div>جاري تحميل المسار...</div>' : '<div>Loading route...</div>';
+        directionsOl.innerHTML = '';
+
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          if (!data.routes || data.routes.length === 0) throw new Error('No route found');
+
+          const r = data.routes[0];
+          if (routeLayer) map.removeLayer(routeLayer);
+          routeLayer = L.geoJSON(r.geometry, { color: '#1f78b4', weight: 5 }).addTo(map);
+          map.fitBounds(routeLayer.getBounds(), { padding: [40, 40] });
+
+          // المسافة بالكيلومتر
+          const distKm = r.distance / 1000;
+          // حساب الوقت بالدقائق باستخدام السرعة الثابتة
+          const speed = SPEEDS[profileMode]; // driving, walking, cycling
+          const durationMin = Math.round(distKm / speed);
+
+          const isAr = currentLanguage === 'ar';
+          const durationText = isAr ? `المدة: ${durationMin} دقائق` : `Duration: ${durationMin} mins`;
+          const distanceText = isAr ? `المسافة: ${distKm.toFixed(1)} كم` : `Distance: ${distKm.toFixed(1)} km`;
+          timesDiv.innerHTML = `<div>${durationText}</div><div>${distanceText}</div>`;
+
+          directionsOl.innerHTML = '';
+          r.legs.forEach(leg => leg.steps.forEach(step => {
+            const li = document.createElement('li');
+            li.textContent = buildInstruction(step, currentLanguage);
+            directionsOl.appendChild(li);
+          }));
+
+        } catch (err) {
+          console.error(err);
+          const isAr = currentLanguage === 'ar';
+          timesDiv.innerHTML = isAr ? '<div style="color:#ef4444;">فشل تحميل المسار. حاول مرة أخرى.</div>' : '<div style="color:#ef4444;">Failed to load route. Try again.</div>';
+          directionsOl.innerHTML = isAr ? '<li>تعذر الحصول على الاتجاهات</li>' : '<li>Directions unavailable</li>';
+        }
+      }
+
+      // ---------- تقدير زمن الحافلة (باستخدام مسار السيارة والسرعة 0.9 كم/دقيقة) ----------
+      function recalcBusEstimate() {
+        currentMode = 'bus';
+        updateActiveModeButtons();
+        if (routeLayer) { try { map.removeLayer(routeLayer); } catch(e){} routeLayer = null; }
+
+        const timesDiv = document.getElementById('times');
+        const directionsOl = document.getElementById('directions');
+        timesDiv.innerHTML = currentLanguage === 'ar' ? '<div>جاري التقدير...</div>' : '<div>Estimating...</div>';
+        directionsOl.innerHTML = '';
+
+        const url = `https://router.project-osrm.org/route/v1/driving/${startLon},${startLat};${destLon},${destLat}?overview=false`;
+        fetch(url)
+          .then(res => res.json())
+          .then(data => {
+            if (!data.routes || !data.routes.length) throw new Error('No route');
+            const dr = data.routes[0];
+            const distKm = dr.distance / 1000;
+            const durationMin = Math.round(distKm / SPEEDS.bus); // 0.9 km/min
+
+            const isAr = currentLanguage === 'ar';
+            const durationText = isAr ? `المدة بالحافلة: ${durationMin} دقائق` : `Bus Duration: ${durationMin} mins`;
+            const distanceText = isAr ? `المسافة: ${distKm.toFixed(1)} كم` : `Distance: ${distKm.toFixed(1)} km`;
+            timesDiv.innerHTML = `<div>${durationText}</div><div>${distanceText}</div>`;
+            directionsOl.innerHTML = isAr ? '<li>لا توجد اتجاهات مفصلة للحافلة (تقديري فقط)</li>' : '<li>No detailed bus directions (estimate only)</li>';
+          })
+          .catch(err => {
+            console.error(err);
+            const isAr = currentLanguage === 'ar';
+            timesDiv.innerHTML = isAr ? '<div style="color:#ef4444;">فشل تقدير مسار الحافلة</div>' : '<div style="color:#ef4444;">Bus estimate failed</div>';
+            directionsOl.innerHTML = '';
+          });
+      }
+
+      // ---------- تهيئة الخريطة ----------
+      const map = L.map('map').setView([(startLat + destLat) / 2, (startLon + destLon) / 2], 12);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '© OpenStreetMap contributors' }).addTo(map);
+
+      const startMarker = L.marker([startLat, startLon]).addTo(map).bindPopup(currentLanguage === 'ar' ? 'الانطلاق' : 'Start');
+      const destMarker = L.marker([destLat, destLon]).addTo(map).bindPopup(destName).openPopup();
+
+      // ---------- ربط الأحداث بالأزرار ----------
+      document.getElementById('mode-driving').addEventListener('click', () => loadRoute('driving'));
+      document.getElementById('mode-walking').addEventListener('click', () => loadRoute('walking'));
+      document.getElementById('mode-cycling').addEventListener('click', () => loadRoute('cycling'));
+      document.getElementById('mode-bus').addEventListener('click', recalcBusEstimate);
+
+      document.getElementById('translateBtn').addEventListener('click', toggleLanguage);
+
+      // ---------- عرض/إخفاء الرأس والتذييل عند حافة الشاشة ----------
+      const header = document.querySelector('header.brand');
+      const footer = document.querySelector('footer');
+      const triggerArea = 60;
+
+      document.addEventListener('mousemove', (e) => {
+        const show = e.clientY < triggerArea || e.clientY > window.innerHeight - triggerArea;
+        header.classList.toggle('visible', show);
+        footer.classList.toggle('visible', show);
+      });
+
+      // ---------- بدء التشغيل ----------
+      const savedProfile = JSON.parse(localStorage.getItem('hayyak_user_profile') || '{}');
+      if (savedProfile.language) {
+        currentLanguage = savedProfile.language;
+        document.documentElement.dir = currentLanguage === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = currentLanguage;
+      }
+      if (savedProfile.theme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+
+      // ملء المعلومات الثابتة للوجهة
+      document.getElementById('panel-price').innerText = destPrice;
+      document.getElementById('panel-rating').innerText = destRating > 0 ? `⭐ ${destRating}/5` : 'N/A';
+      document.getElementById('panel-time').innerText = destTime;
+
+      // تحديث العداد
+      updateNearbyCount();
+
+      // تطبيق الترجمة الأولية
+      translatePage();
+      updateActiveModeButtons();
+
+      // تحميل المسار الافتراضي (سيارة)
+      loadRoute('driving');
+    })();
+  </script>
+</body>
+</html>
